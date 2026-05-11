@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBS — 2026 Financial Scorecard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Blues — the whole spectrum */
+  --b950:#040D1A;--b900:#071428;--b850:#0A1C38;--b800:#0D2448;
+  --b750:#112C58;--b700:#163568;--b650:#1B3F7A;--b600:#214A8E;
+  --b550:#2756A4;--b500:#2E63BC;--b450:#3872CC;--b400:#4A84D8;
+  --b350:#5E97E2;--b300:#74AAEB;--b250:#8DBEF3;--b200:#A8D0F8;
+  --b150:#C4E0FB;--b100:#DDF0FE;--b50:#EDF7FF;
+  /* Semantic */
+  --green:#0FC87A;--green-dim:rgba(15,200,122,0.15);--green-b:rgba(15,200,122,0.35);
+  --amber:#F5A623;--amber-dim:rgba(245,166,35,0.15);--amber-b:rgba(245,166,35,0.35);
+  --red:#F55252;--red-dim:rgba(245,82,82,0.15);--red-b:rgba(245,82,82,0.35);
+  --cyan:#22D3EE;--cyan-dim:rgba(34,211,238,0.12);
+  /* Surfaces */
+  --page:#060F1E;
+  --glass:rgba(255,255,255,0.04);
+  --glass2:rgba(255,255,255,0.07);
+  --glass3:rgba(255,255,255,0.10);
+  --border:rgba(74,132,216,0.18);
+  --border2:rgba(74,132,216,0.32);
+  --border3:rgba(74,132,216,0.5);
+  /* Text */
+  --t1:#E8F2FF;--t2:#8DBEF3;--t3:#4A6A9A;--t4:#2A4470;
+  /* Glow */
+  --glow-blue:0 0 24px rgba(46,99,188,0.4);
+  --glow-sm:0 0 12px rgba(46,99,188,0.25);
+  --sh:0 1px 0 rgba(255,255,255,0.04),0 4px 24px rgba(0,0,0,0.35);
+  --sh-card:0 0 0 1px rgba(74,132,216,0.15),0 4px 24px rgba(0,0,0,0.4);
+  --sh-hover:0 0 0 1px rgba(74,132,216,0.4),0 8px 40px rgba(0,0,0,0.5),0 0 40px rgba(46,99,188,0.15);
+  --r:10px;--rlg:14px;--rxl:18px;
+}
+
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--page);
+  color:var(--t1);
+  min-height:100vh;
+  line-height:1.5;
+  /* subtle dot grid */
+  background-image:radial-gradient(circle at 1px 1px, rgba(74,132,216,0.12) 1px, transparent 0);
+  background-size:28px 28px;
+}
+
+/* PAGE GLOW — ambient light from top */
+body::before{
+  content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);
+  width:900px;height:500px;
+  background:radial-gradient(ellipse,rgba(46,99,188,0.18) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+.page{max-width:1200px;margin:0 auto;padding:28px 20px 70px;position:relative;z-index:1}
+
+/* ── HEADER ─────────────────────────────────────────────────── */
+.hdr{
+  background:linear-gradient(135deg,var(--b800) 0%,var(--b700) 50%,var(--b600) 100%);
+  border:1px solid var(--border2);
+  border-radius:var(--rxl);
+  padding:22px 28px;
+  margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
+  position:relative;overflow:hidden;
+  box-shadow:var(--glow-blue),var(--sh);
+}
+.hdr::before{
+  content:'';position:absolute;right:-80px;top:-80px;
+  width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(94,151,226,0.15) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hdr::after{
+  content:'';position:absolute;left:0;bottom:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(94,151,226,0.5),transparent);
+}
+.hdr-brand{display:flex;align-items:center;gap:14px}
+.hdr-logo{
+  width:44px;height:44px;
+  background:linear-gradient(135deg,var(--b500),var(--b400));
+  border:1px solid var(--border3);
+  border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#fff;
+  font-family:'JetBrains Mono',monospace;
+  box-shadow:0 0 16px rgba(46,99,188,0.5),inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.hdr-t h1{font-size:18px;font-weight:700;color:var(--t1);letter-spacing:-0.025em}
+.hdr-t p{font-size:10px;color:var(--t3);margin-top:3px;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;text-transform:uppercase}
+.hdr-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.qtabs{
+  display:flex;gap:2px;
+  background:rgba(0,0,0,0.3);
+  border:1px solid var(--border);
+  border-radius:9px;padding:3px;
+}
+.qtab{
+  font-size:12px;font-weight:600;padding:6px 18px;border-radius:7px;border:none;
+  background:transparent;color:var(--t3);cursor:pointer;
+  transition:all 0.2s;font-family:'Inter',sans-serif;letter-spacing:0.01em;
+}
+.qtab.active{
+  background:linear-gradient(135deg,var(--b500),var(--b450));
+  color:#fff;
+  box-shadow:0 0 12px rgba(46,99,188,0.5),inset 0 1px 0 rgba(255,255,255,0.1);
+}
+.qtab:hover:not(.active){color:var(--t2);background:rgba(255,255,255,0.06)}
+
+
+/* ── BANNER ──────────────────────────────────────────────────── */
+.banner{
+  border-radius:var(--r);padding:10px 18px;margin-bottom:16px;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  font-size:13px;font-weight:500;
+  background:rgba(245,166,35,0.08);
+  border:1px solid rgba(245,166,35,0.25);
+  color:var(--amber);
+}
+.banner strong{font-weight:700;color:#FFD580}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.04em}
+.pill.g{background:var(--green-dim);color:var(--green);border:1px solid var(--green-b)}
+.pill.a{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-b)}
+.pill.r{background:var(--red-dim);color:var(--red);border:1px solid var(--red-b)}
+
+/* ── ANNUAL SNAPSHOT ─────────────────────────────────────────── */
+.snap{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:var(--rlg);
+  padding:16px 20px;margin-bottom:16px;
+  backdrop-filter:blur(20px);
+  box-shadow:var(--sh-card);
+}
+.snap-hdr{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--t3);margin-bottom:14px;
+}
+.snap-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)}
+.si{background:var(--b900);padding:10px 14px}
+.si:first-child{border-radius:8px 0 0 8px}
+.si:last-child{border-radius:0 8px 8px 0}
+.si-l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t3);margin-bottom:5px}
+.si-v{font-size:18px;font-weight:800;color:var(--b200);font-family:'JetBrains Mono',monospace;letter-spacing:-0.02em}
+.si-s{font-size:10px;color:var(--t4);margin-top:2px}
+
+/* ── TRIGGER GRID ────────────────────────────────────────────── */
+.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+
+.tc{
+  background:linear-gradient(160deg,rgba(13,28,56,0.95),rgba(9,20,42,0.98));
+  border:1px solid var(--border);
+  border-radius:var(--rlg);
+  overflow:hidden;
+  cursor:pointer;
+  transition:box-shadow 0.2s,transform 0.15s,border-color 0.2s;
+  position:relative;
+}
+.tc::before{
+  content:'';position:absolute;inset:0;border-radius:var(--rlg);
+  background:linear-gradient(160deg,rgba(94,151,226,0.04) 0%,transparent 60%);
+  pointer-events:none;
+}
+.tc:hover{
+  box-shadow:var(--sh-hover);
+  transform:translateY(-2px);
+  border-color:var(--border3);
+}
+.tc.wide{grid-column:span 2}
+
+/* accent line at top — animated width on hover */
+.tc-top{height:2px;width:100%;position:relative;overflow:hidden}
+.tc-top::after{content:'';position:absolute;inset:0;background:inherit;filter:blur(4px);opacity:0.6}
+.tc-top.g{background:linear-gradient(90deg,#0FC87A,#22D3EE)}
+.tc-top.a{background:linear-gradient(90deg,#F5A623,#FDD835)}
+.tc-top.r{background:linear-gradient(90deg,#F55252,#FF8A65)}
+.tc-top.p{background:linear-gradient(90deg,var(--b450),var(--b350))}
+
+.tc-body{padding:16px 18px 14px}
+.tc-dept{
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--t4);margin-bottom:4px;
+}
+.tc-name{
+  font-size:13px;font-weight:600;color:var(--t2);
+  margin-bottom:10px;
+  display:flex;align-items:center;justify-content:space-between;gap:6px;
+}
+.tc-hint{
+  font-size:9px;font-weight:700;
+  color:var(--b300);background:rgba(46,99,188,0.2);
+  padding:2px 8px;border-radius:6px;
+  transition:all 0.2s;letter-spacing:0.03em;flex-shrink:0;
+  border:1px solid rgba(46,99,188,0.3);
+}
+.tc:hover .tc-hint{background:rgba(46,99,188,0.35);color:var(--b200)}
+
+.tc-val{
+  font-size:34px;font-weight:800;line-height:1;margin-bottom:4px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:-0.04em;
+}
+.tc-val.g{color:var(--green);text-shadow:0 0 20px rgba(15,200,122,0.4)}
+.tc-val.a{color:var(--amber);text-shadow:0 0 20px rgba(245,166,35,0.4)}
+.tc-val.r{color:var(--red);text-shadow:0 0 20px rgba(245,82,82,0.35)}
+.tc-val.p{color:var(--t3)}
+
+.tc-goal{font-size:11px;color:var(--t4);margin-bottom:10px;line-height:1.4}
+
+.tc-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:700;padding:3px 10px;
+  border-radius:6px;letter-spacing:0.03em;margin-bottom:12px;
+}
+.tc-badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.tc-badge.g{background:var(--green-dim);color:var(--green);border:1px solid var(--green-b)}
+.tc-badge.g::before{background:var(--green);box-shadow:0 0 4px var(--green)}
+.tc-badge.a{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-b)}
+.tc-badge.a::before{background:var(--amber);box-shadow:0 0 4px var(--amber)}
+.tc-badge.r{background:var(--red-dim);color:var(--red);border:1px solid var(--red-b)}
+.tc-badge.r::before{background:var(--red);box-shadow:0 0 4px var(--red)}
+.tc-badge.p{background:rgba(74,106,154,0.15);color:var(--t3);border:1px solid var(--t4)}
+.tc-badge.p::before{background:var(--t3)}
+
+.tier-row{display:flex;gap:4px;margin-bottom:12px}
+.tchip{
+  flex:1;font-size:9px;font-weight:700;text-align:center;
+  padding:4px 2px;border-radius:5px;letter-spacing:0.03em;line-height:1.3;
+  transition:all 0.15s;
+}
+.tchip.thresh.on{background:rgba(245,166,35,0.15);color:var(--amber);border:1px solid rgba(245,166,35,0.3)}
+.tchip.tgt.on{background:rgba(46,99,188,0.2);color:var(--b250);border:1px solid rgba(46,99,188,0.4)}
+.tchip.str.on{background:var(--green-dim);color:var(--green);border:1px solid var(--green-b)}
+.tchip.off{background:rgba(255,255,255,0.03);color:var(--t4);border:1px solid var(--border);opacity:0.5}
+
+/* Progress */
+.prog{margin-top:4px}
+.prog-lbl{
+  display:flex;justify-content:space-between;
+  font-size:9px;color:var(--t4);margin-bottom:3px;
+  font-family:'JetBrains Mono',monospace;
+}
+.prog-track{
+  height:5px;background:rgba(255,255,255,0.05);
+  border-radius:3px;position:relative;overflow:visible;
+  border:1px solid rgba(74,132,216,0.12);
+}
+.prog-fill{height:100%;border-radius:3px;transition:width 0.7s cubic-bezier(.34,1.56,.64,1)}
+.prog-fill.g{background:linear-gradient(90deg,#0FC87A,#22D3EE);box-shadow:0 0 8px rgba(15,200,122,0.5)}
+.prog-fill.a{background:linear-gradient(90deg,#F5A623,#FDD835);box-shadow:0 0 8px rgba(245,166,35,0.5)}
+.prog-fill.r{background:linear-gradient(90deg,#F55252,#FF8A65);box-shadow:0 0 8px rgba(245,82,82,0.5)}
+.prog-fill.p{background:linear-gradient(90deg,var(--b500),var(--b400))}
+.prog-marker{
+  position:absolute;top:-5px;width:2px;height:15px;
+  border-radius:1px;background:rgba(255,255,255,0.4);
+}
+
+/* ── DRILL PANEL ─────────────────────────────────────────────── */
+.drill{display:none;border-top:1px solid var(--border)}
+.drill.open{display:block}
+.d-inner{
+  padding:18px;
+  background:linear-gradient(180deg,rgba(7,20,40,0.98),rgba(4,13,26,0.99));
+}
+.d-hdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.d-title{font-size:13px;font-weight:700;color:var(--t1)}
+.d-sub{font-size:11px;color:var(--t3);margin-top:2px}
+.d-close{
+  font-size:10px;font-weight:700;padding:4px 10px;
+  border:1px solid var(--border2);border-radius:6px;
+  background:var(--glass2);cursor:pointer;color:var(--t3);
+  transition:all 0.15s;flex-shrink:0;margin-left:10px;
+  font-family:'Inter',sans-serif;
+}
+.d-close:hover{background:var(--glass3);color:var(--t1);border-color:var(--border3)}
+.d-layout{display:grid;grid-template-columns:1fr 190px;gap:16px;align-items:start}
+.d-items{display:flex;flex-direction:column;gap:8px}
+.di{display:grid;grid-template-columns:128px 1fr 56px 52px;gap:8px;align-items:center}
+.di-lbl{font-size:12px;color:var(--t2);font-weight:500;line-height:1.3}
+.di-bar{
+  height:22px;background:rgba(255,255,255,0.03);
+  border-radius:5px;overflow:hidden;
+  border:1px solid var(--border);
+}
+.di-fill{
+  height:100%;display:flex;align-items:center;padding-left:7px;
+  font-size:10px;font-weight:700;white-space:nowrap;
+  transition:width 0.7s ease;
+}
+.di-actual{font-size:11px;font-weight:700;color:var(--t1);text-align:right;font-family:'JetBrains Mono',monospace}
+.di-vs{font-size:10px;font-weight:700;text-align:right;font-family:'JetBrains Mono',monospace}
+.di-vs.g{color:var(--green)}
+.di-vs.r{color:var(--red)}
+.di-vs.n{color:var(--t3)}
+.d-note{
+  font-size:11px;color:var(--t4);font-style:italic;
+  margin-top:10px;padding-top:10px;border-top:1px solid var(--border);line-height:1.6;
+}
+.d-chart-lbl{
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;
+  color:var(--t4);margin-bottom:8px;text-align:center;
+}
+.d-chart-wrap{position:relative;height:155px}
+
+/* ── INCENTIVE ───────────────────────────────────────────────── */
+.incent{
+  background:linear-gradient(135deg,var(--b800) 0%,var(--b750) 50%,var(--b700) 100%);
+  border:1px solid var(--border2);
+  border-radius:var(--rlg);padding:18px 22px;margin-bottom:16px;
+  box-shadow:var(--glow-blue),var(--sh);
+  position:relative;overflow:hidden;
+}
+.incent::before{
+  content:'';position:absolute;bottom:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(46,99,188,0.12),transparent 70%);
+  pointer-events:none;
+}
+.incent-hdr{
+  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--t4);margin-bottom:14px;
+}
+.incent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.it{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:var(--r);padding:14px 16px;
+  transition:background 0.15s,border-color 0.15s;
+  position:relative;overflow:hidden;
+}
+.it::before{content:'';position:absolute;top:0;left:0;right:0;height:1px}
+.it:nth-child(1)::before{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
+.it:nth-child(2)::before{background:linear-gradient(90deg,transparent,var(--b350),transparent)}
+.it:nth-child(3)::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.it:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.14)}
+.it-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;padding:3px 8px;border-radius:4px;display:inline-block}
+.it-badge.t1{background:rgba(245,166,35,0.15);color:var(--amber)}
+.it-badge.t2{background:rgba(46,99,188,0.2);color:var(--b250)}
+.it-badge.t3{background:var(--green-dim);color:var(--green)}
+.it-pay{font-size:26px;font-weight:800;color:var(--t1);font-family:'JetBrains Mono',monospace;margin-bottom:3px;letter-spacing:-0.02em}
+.it-desc{font-size:12px;color:var(--t2)}
+.it-note{font-size:10px;color:var(--t4);margin-top:5px}
+
+/* ── TREND ───────────────────────────────────────────────────── */
+.trend-card{
+  background:linear-gradient(160deg,rgba(13,28,56,0.95),rgba(9,20,42,0.98));
+  border:1px solid var(--border);
+  border-radius:var(--rlg);padding:20px 22px;
+  box-shadow:var(--sh-card);
+}
+.trend-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.trend-hdr h2{font-size:14px;font-weight:700;color:var(--t1)}
+.legend{display:flex;gap:14px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t3);font-weight:500}
+.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.trend-wrap{position:relative;height:210px}
+
+
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--b900)}
+::-webkit-scrollbar-thumb{background:var(--b600);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--b500)}
+
+/* Responsive */
+@media(max-width:920px){
+  .tgrid{grid-template-columns:repeat(2,1fr)}
+  .tc.wide{grid-column:span 2}
+  .snap-grid{grid-template-columns:repeat(3,1fr)}
+  .d-layout{grid-template-columns:1fr}
+}
+@media(max-width:560px){
+  .tgrid{grid-template-columns:1fr}
+  .tc.wide{grid-column:span 1}
+  .incent-grid{grid-template-columns:1fr}
+  .snap-grid{grid-template-columns:repeat(2,1fr)}
+  .di{grid-template-columns:100px 1fr 44px 40px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">PBS</div>
+    <div class="hdr-t">
+      <h1>2026 Financial Scorecard</h1>
+      <p>All 7 triggers must be met &nbsp;·&nbsp; Year-end actuals determine tier</p>
+    </div>
+  </div>
+  <div class="hdr-r">
+    <div class="qtabs" id="qTabs"></div>
+
+  </div>
+</div>
+
+<!-- BANNER -->
+<div class="banner" id="banner"></div>
+
+<!-- ANNUAL SNAPSHOT -->
+<div class="snap">
+  <div class="snap-hdr">2026 Annual Goals — Target Tier</div>
+  <div class="snap-grid">
+    <div class="si"><div class="si-l">Total Revenue</div><div class="si-v">$9.67M</div><div class="si-s">Annual target</div></div>
+    <div class="si"><div class="si-l">Print Revenue</div><div class="si-v">$8.703M</div><div class="si-s">Annual</div></div>
+    <div class="si"><div class="si-l">MSP Revenue</div><div class="si-v">$967K</div><div class="si-s">Annual</div></div>
+    <div class="si"><div class="si-l">Print MRR</div><div class="si-v">$650.3K</div><div class="si-s">Monthly target</div></div>
+    <div class="si"><div class="si-l">MSP MRR</div><div class="si-v">$72.3K</div><div class="si-s">Monthly target</div></div>
+  </div>
+</div>
+
+<!-- TRIGGER GRID -->
+<div class="tgrid" id="tgrid"></div>
+
+<!-- INCENTIVE TIERS -->
+<div class="incent">
+  <div class="incent-hdr">2026 Incentive Tiers — When PBS wins, we all share in the success</div>
+  <div class="incent-grid">
+    <div class="it"><div class="it-badge t1">Threshold</div><div class="it-pay">3%</div><div class="it-desc">of base wage bonus</div><div class="it-note">All 7 triggers at threshold level</div></div>
+    <div class="it"><div class="it-badge t2">Target</div><div class="it-pay">5%</div><div class="it-desc">+ Profit Pail eligible</div><div class="it-note">All 7 triggers at target level</div></div>
+    <div class="it"><div class="it-badge t3">Stretch</div><div class="it-pay">5%</div><div class="it-desc">+ Enhanced Profit Pail</div><div class="it-note">All 7 triggers at stretch level</div></div>
+  </div>
+</div>
+
+<!-- TREND -->
+<div class="trend-card">
+  <div class="trend-hdr">
+    <h2>Quarterly Trend</h2>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:#4A84D8"></div>Revenue</div>
+      <div class="leg"><div class="leg-dot" style="background:rgba(74,132,216,0.35);border:1px dashed #4A84D8"></div>Rev pace</div>
+      <div class="leg"><div class="leg-dot" style="background:#0FC87A"></div>NPI %</div>
+      <div class="leg"><div class="leg-dot" style="background:#F55252"></div>OPEX %</div>
+    </div>
+  </div>
+  <div class="trend-wrap"><canvas id="tChart" role="img" aria-label="Quarterly revenue and ratio trends">Trend chart</canvas></div>
+</div>
+
+</div><!-- /page -->
+
+
+
+<script>
+// ══ TRIGGER DEFINITIONS ═══════════════════════════════════════════
+const T=[
+  {id:'rev',name:'Revenue',dept:'Sales',dir:'up',fmt:'$',wide:true,
+   thresh:9000000,target:9670000,stretch:9670000,
+   drill:{title:'Revenue Breakdown',sub:'By business line vs. annual targets',
+     items:[
+       {lbl:'Print Revenue',    a:7950000,t:8703000,c:'#4A84D8',note:'Core business — tracking vs. annual goal'},
+       {lbl:'MSP Revenue',      a:455000, t:967000, c:'#0FC87A',note:'Ramp-up phase — new business development'},
+       {lbl:'Services / Other', a:295000, t:0,      c:'#8DBEF3',note:'Non-recurring project revenue'},
+     ],curr:true,note:'Prototype data — replace with actual P&L revenue by business line.'}},
+  {id:'cogs',name:'COGS %',dept:'Operations',dir:'down',fmt:'%',
+   thresh:30,target:30,stretch:29,
+   drill:{title:'COGS Breakdown',sub:'Cost components as % of revenue',
+     items:[
+       {lbl:'Paper & Supplies',    a:10.2,t:9.5, c:'#4A84D8',note:'Primary consumable — slightly over'},
+       {lbl:'Equipment Leases',    a:7.8, t:8.0, c:'#0FC87A',note:'Favorable — under budget'},
+       {lbl:'Tech / MSP Delivery', a:5.4, t:5.0, c:'#F5A623',note:'MSP growth increasing this line'},
+       {lbl:'3rd Party Services',  a:3.8, t:4.5, c:'#A78BFA',note:'Well under target — favorable'},
+       {lbl:'Freight / Shipping',  a:2.2, t:3.0, c:'#8DBEF3',note:'Significantly under target'},
+     ],unit:'%',note:'Prototype breakdown. Update with COGS line items from your P&L.'}},
+  {id:'gm',name:'Gross Margin %',dept:'Sales / Finance',dir:'up',fmt:'%',
+   thresh:70,target:70,stretch:71,
+   drill:{title:'Gross Margin by Segment',sub:'Margin % by revenue stream',
+     items:[
+       {lbl:'Print (core)',     a:72.1,t:71.0,c:'#0FC87A',note:'Strongest margin — above target'},
+       {lbl:'MSP (managed IT)',a:61.5,t:68.0,c:'#F5A623',note:'Below target — improving as it scales'},
+       {lbl:'Services / Other',a:74.2,t:72.0,c:'#4A84D8',note:'High-margin ancillary revenue'},
+     ],unit:'%',note:'Prototype segment margins. Replace with P&L gross profit by segment.'}},
+  {id:'payroll',name:'Payroll %',dept:'Finance',dir:'down',fmt:'%',
+   thresh:35,target:33,stretch:33,
+   drill:{title:'Payroll Breakdown',sub:'Payroll components as % of revenue',
+     items:[
+       {lbl:'Base Wages',        a:22.4,t:22.0,c:'#4A84D8',note:'Largest component — on pace'},
+       {lbl:'Benefits & Health', a:4.8, t:5.0, c:'#0FC87A',note:'Slightly under — favorable'},
+       {lbl:'Payroll Taxes',     a:2.6, t:2.5, c:'#8DBEF3',note:'In line with expectations'},
+       {lbl:'Contract / Temp',   a:1.4, t:3.5, c:'#A78BFA',note:'Low temp usage — favorable'},
+     ],unit:'%',note:'Prototype breakdown. Update with payroll register data.'}},
+  {id:'opex',name:'Total OPEX %',dept:'Operations',dir:'down',fmt:'%',
+   thresh:50,target:48,stretch:47,
+   drill:{title:'OPEX Breakdown',sub:'All operating expense components as % of revenue',
+     items:[
+       {lbl:'Payroll (total)',   a:31.2,t:33.0,c:'#4A84D8',note:'Under budget — favorable'},
+       {lbl:'Rent & Facilities', a:7.2, t:7.0, c:'#F5A623',note:'Slightly over — lease renewals'},
+       {lbl:'Marketing & Ads',   a:4.1, t:3.5, c:'#A78BFA',note:'Over budget — campaign spend'},
+       {lbl:'Software & Tools',  a:3.8, t:3.0, c:'#22D3EE',note:'Increased tooling investment'},
+       {lbl:'G&A / Admin',       a:3.4, t:1.5, c:'#F55252',note:'Primary overage driver — needs review'},
+     ],unit:'%',note:'Q1 actuals. G&A and Marketing are primary drivers of 1.7% overage vs. target.'}},
+  {id:'depr',name:'Depreciation',dept:'Sales',dir:'up',fmt:'%',
+   thresh:15,target:15,stretch:15,
+   drill:{title:'Depreciation by Asset Class',sub:'Depreciation as % of revenue by category',
+     items:[
+       {lbl:'Print Equipment',   a:5.2,t:9.0,c:'#4A84D8',note:'Largest class — well below target'},
+       {lbl:'IT Infrastructure', a:1.8,t:3.0,c:'#F5A623',note:'Servers, network equipment'},
+       {lbl:'Vehicles / Fleet',  a:0.6,t:1.5,c:'#8DBEF3',note:'Fleet below expected pace'},
+       {lbl:'Leasehold Improv.', a:0.5,t:1.5,c:'#A78BFA',note:'Tenant improvement amortization'},
+     ],unit:'%',note:'Significant 6.9% gap vs. 15% target. May require capital investment review.'}},
+  {id:'npi',name:'Net Profit Index %',dept:'Finance',dir:'up',fmt:'%',
+   thresh:81,target:100,stretch:113,
+   drill:{title:'NPI — Key Drivers',sub:'Factors impacting net profit vs. plan',
+     items:[
+       {lbl:'Revenue vs. plan',  a:8.1,  t:25.0,c:'#4A84D8',note:'Below revenue pace — primary drag'},
+       {lbl:'COGS efficiency',   a:3.2,  t:3.0, c:'#0FC87A',note:'Slight favorable vs. plan'},
+       {lbl:'OPEX overrun',      a:-4.8, t:0,   c:'#F55252',note:'1.7% OPEX over target = NPI drag'},
+       {lbl:'Depreciation gap',  a:-6.9, t:0,   c:'#F5A623',note:'8.1% vs 15% target is key drag'},
+     ],unit:'%',note:'NPI at 13.5% vs. 100% target. Revenue ramp + OPEX reduction are highest-leverage levers.'}},
+];
+
+// ══ STATE ═════════════════════════════════════════════════════════
+const SEED={
+  Q1:{note:'Q1 2026 actuals (through Mar 31)',
+    rev:{a:2100000},cogs:{a:29.4},gm:{a:70.6},payroll:{a:31.2},opex:{a:49.7},depr:{a:8.1},npi:{a:13.5}},
+  Q2:{note:'Q2 2026 — targets set, awaiting actuals',
+    rev:{a:null},cogs:{a:null},gm:{a:null},payroll:{a:null},opex:{a:null},depr:{a:null},npi:{a:null}},
+  Q3:{note:'Q3 2026 — not yet started',
+    rev:{a:null},cogs:{a:null},gm:{a:null},payroll:{a:null},opex:{a:null},depr:{a:null},npi:{a:null}},
+  Q4:{note:'Q4 2026 — not yet started',
+    rev:{a:null},cogs:{a:null},gm:{a:null},payroll:{a:null},opex:{a:null},depr:{a:null},npi:{a:null}},
+};
+const Q2G={rev:3385000,cogs:30,gm:70,payroll:33,opex:48,depr:15,npi:35};
+
+let S=JSON.parse(localStorage.getItem('pbs26v3')||'null')||JSON.parse(JSON.stringify(SEED));
+let aQ='Q1',openD=null,tChart=null,dCharts={};
+
+function save(){try{localStorage.setItem('pbs26v3',JSON.stringify(S));}catch(e){}}
+const fmtM=v=>v>=1e6?'$'+(v/1e6).toFixed(3).replace(/0+$/,'').replace(/\.$/,'')+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+Math.round(v).toLocaleString();
+const fmtP=v=>v!=null?v.toFixed(1)+'%':'—';
+
+function getA(id){
+  const v=S[aQ]?.[id]?.a;
+  if(v!=null)return v;
+  if(aQ==='Q2')return Q2G[id]??null;
+  return null;
+}
+function status(t,a){
+  if(a==null)return 'p';
+  const m=(tv,a,d)=>d==='up'?a>=tv:a<=tv;
+  if(m(t.stretch,a,t.dir))return 's';
+  if(m(t.target,a,t.dir))return 't';
+  if(m(t.thresh,a,t.dir))return 'th';
+  return 'r';
+}
+const SLBL={s:'On Track — Stretch',t:'On Track for Target',th:'Threshold Only',r:'Needs Attention',p:'Awaiting Data'};
+const SCC={s:'g',t:'g',th:'a',r:'r',p:'p'};
+function dv(t,a){if(a==null)return '—';return t.fmt==='$'?fmtM(a):fmtP(a);}
+
+// ══ RENDER ════════════════════════════════════════════════════════
+function renderAll(){renderTabs();renderBanner();renderGrid();renderTrend();}
+
+function renderTabs(){
+  const el=document.getElementById('qTabs');if(!el)return;
+  el.innerHTML=['Q1','Q2','Q3','Q4'].map(q=>
+    `<button class="qtab ${q===aQ?'active':''}" onclick="setQ('${q}')">${q}</button>`
+  ).join('');
+}
+function setQ(q){aQ=q;openD=null;Object.values(dCharts).forEach(c=>c.destroy());dCharts={};renderAll();}
+
+function renderBanner(){
+  const stats=T.map(t=>status(t,getA(t.id)));
+  const on=stats.filter(s=>s==='t'||s==='s').length;
+  const th=stats.filter(s=>s==='th').length;
+  const rf=stats.filter(s=>s==='r').length;
+  const pd=stats.filter(s=>s==='p').length;
+  const note=S[aQ]?.note||'';
+  document.getElementById('banner').innerHTML=
+    `<span>📋 <strong>Plan Status: Not Yet Funded</strong> — ${note}</span>
+     <div class="pills">
+       ${on?`<span class="pill g">${on} On Track</span>`:''}
+       ${th?`<span class="pill a">${th} Threshold Only</span>`:''}
+       ${rf?`<span class="pill r">${rf} Needs Attention</span>`:''}
+       ${pd?`<span class="pill a">${pd} Awaiting Data</span>`:''}
+     </div>`;
+}
+
+function renderGrid(){
+  document.getElementById('tgrid').innerHTML=T.map(t=>cardHTML(t)).join('');
+  if(openD)setTimeout(()=>renderDC(openD),60);
+}
+
+function cardHTML(t){
+  const a=getA(t.id),st=status(t,a),cc=SCC[st];
+  const thM=st!=='r'&&st!=='p',tgM=st==='t'||st==='s',stM=st==='s';
+  let fp=0,mp=50;
+  if(a!=null){
+    if(t.fmt==='$'){fp=Math.min(100,(a/t.target)*100);mp=Math.min(95,(t.thresh/t.target)*100);}
+    else if(t.dir==='up'){const lo=t.thresh*.7,hi=t.stretch*1.1;fp=Math.max(0,Math.min(100,((a-lo)/(hi-lo))*100));mp=Math.max(0,Math.min(100,((t.target-lo)/(hi-lo))*100));}
+    else{const lo=t.stretch*.85,hi=t.thresh*1.15;fp=Math.max(0,Math.min(100,((hi-a)/(hi-lo))*100));mp=Math.max(0,Math.min(100,((hi-t.target)/(hi-lo))*100));}
+  }
+  const goalStr=t.fmt==='$'?`Annual target: ${fmtM(t.target)} &nbsp;·&nbsp; ${aQ} actual: ${dv(t,a)}`:`Goal: ${t.dir==='up'?'≥':'≤'}${t.target}${t.fmt} &nbsp;·&nbsp; Stretch: ${t.dir==='up'?'≥':'≤'}${t.stretch}${t.fmt}`;
+  const isOpen=openD===t.id;
+  return `<div class="tc ${t.wide?'wide':''}" id="c-${t.id}" onclick="toggleD('${t.id}')">
+    <div class="tc-top ${cc}"></div>
+    <div class="tc-body">
+      <div class="tc-dept">${t.dept}</div>
+      <div class="tc-name">${t.name}<span class="tc-hint">${isOpen?'▲ collapse':'▼ detail'}</span></div>
+      <div class="tc-val ${cc}">${dv(t,a)}</div>
+      <div class="tc-goal">${goalStr}</div>
+      <span class="tc-badge ${cc}">${SLBL[st]}</span>
+      <div class="tier-row">
+        <div class="tchip thresh ${thM?'on':'off'}">THRESH ${t.dir==='up'?'≥':'≤'}${t.thresh}${t.fmt!=='$'?t.fmt:''}</div>
+        <div class="tchip tgt ${tgM?'on':'off'}">TARGET ${t.dir==='up'?'≥':'≤'}${t.target}${t.fmt!=='$'?t.fmt:''}</div>
+        <div class="tchip str ${stM?'on':'off'}">STRETCH ${t.dir==='up'?'≥':'≤'}${t.stretch}${t.fmt!=='$'?t.fmt:''}</div>
+      </div>
+      <div class="prog">
+        <div class="prog-lbl"><span>${t.dir==='up'?'Low':'High'}</span><span>Target</span><span>${t.dir==='up'?'Stretch':'Under'}</span></div>
+        <div class="prog-track">
+          <div class="prog-fill ${cc}" style="width:${fp.toFixed(1)}%"></div>
+          <div class="prog-marker" style="left:${mp.toFixed(1)}%"></div>
+        </div>
+      </div>
+    </div>
+    <div class="drill ${isOpen?'open':''}" id="d-${t.id}" onclick="event.stopPropagation()">
+      ${isOpen?drillHTML(t):''}
+    </div>
+  </div>`;
+}
+
+function drillHTML(t){
+  const d=t.drill,isCurr=d.curr,unit=d.unit||'';
+  const maxA=Math.max(...d.items.map(x=>Math.abs(x.a)));
+  const rows=d.items.map(i=>{
+    const w=maxA>0?Math.max(5,(Math.abs(i.a)/maxA)*100).toFixed(1):5;
+    const v=i.a-i.t;
+    const fav=t.dir==='up'?v>=0:v<=0;
+    const vc=i.t===0?'n':fav?'g':'r';
+    const vs=i.t===0?'—':(v>0?'+':'')+(isCurr?fmtM(v):v.toFixed(1)+unit);
+    const val=isCurr?fmtM(i.a):i.a.toFixed(1)+unit;
+    return `<div class="di" title="${i.note||''}">
+      <div class="di-lbl">${i.lbl}</div>
+      <div class="di-bar"><div class="di-fill" style="width:${w}%;background:${i.c}18;color:${i.c}">${val}</div></div>
+      <div class="di-actual">${val}</div>
+      <div class="di-vs ${vc}">${vs}</div>
+    </div>`;
+  }).join('');
+  return `<div class="d-inner">
+    <div class="d-hdr">
+      <div><div class="d-title">${d.title}</div><div class="d-sub">${d.sub}</div></div>
+      <button class="d-close" onclick="closeD()">Close ✕</button>
+    </div>
+    <div class="d-layout">
+      <div><div class="d-items">${rows}</div><div class="d-note">ⓘ ${d.note}</div></div>
+      <div>
+        <div class="d-chart-lbl">Distribution</div>
+        <div class="d-chart-wrap"><canvas id="dc-${t.id}" role="img" aria-label="${d.title}">Chart</canvas></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleD(id){
+  if(openD===id){closeD();return;}
+  if(dCharts[openD]){dCharts[openD].destroy();delete dCharts[openD];}
+  openD=id;renderGrid();
+}
+function closeD(){
+  if(dCharts[openD]){dCharts[openD].destroy();delete dCharts[openD];}
+  openD=null;renderGrid();
+}
+function renderDC(id){
+  const t=T.find(x=>x.id===id);if(!t)return;
+  const cv=document.getElementById('dc-'+id);if(!cv)return;
+  if(dCharts[id]){dCharts[id].destroy();}
+  const pos=t.drill.items.filter(i=>i.a>0);
+  dCharts[id]=new Chart(cv,{
+    type:'doughnut',
+    data:{labels:pos.map(x=>x.lbl),datasets:[{
+      data:pos.map(x=>Math.abs(x.a)),
+      backgroundColor:pos.map(x=>x.c+'28'),
+      borderColor:pos.map(x=>x.c),
+      borderWidth:2,hoverOffset:6,
+    }]},
+    options:{
+      responsive:true,maintainAspectRatio:false,cutout:'62%',
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>{
+          const t2=T.find(x=>x.id===id);
+          return ` ${ctx.label}: ${t2?.drill?.curr?fmtM(ctx.raw):ctx.raw.toFixed(1)+'%'}`;
+        }}}
+      }
+    }
+  });
+}
+
+// ══ TREND ═════════════════════════════════════════════════════════
+function renderTrend(){
+  if(tChart){tChart.destroy();tChart=null;}
+  const qs=['Q1','Q2','Q3','Q4'];
+  const revA=qs.map(q=>S[q]?.rev?.a??null);
+  const revT=[9670000*.25,9670000*.5,9670000*.75,9670000];
+  const npiA=qs.map(q=>S[q]?.npi?.a??null);
+  const opA=qs.map(q=>S[q]?.opex?.a??null);
+  tChart=new Chart(document.getElementById('tChart'),{
+    type:'bar',
+    data:{labels:qs,datasets:[
+      {type:'bar', label:'Revenue actual',    data:revA,backgroundColor:'rgba(74,132,216,0.55)',borderColor:'#4A84D8',borderWidth:1,yAxisID:'yL',borderRadius:4},
+      {type:'line',label:'Revenue pace',      data:revT,borderColor:'rgba(74,132,216,0.35)',borderDash:[5,4],pointRadius:0,tension:0.3,fill:false,yAxisID:'yL',borderWidth:1.5},
+      {type:'line',label:'Net Profit Index %',data:npiA,borderColor:'#0FC87A',pointBackgroundColor:'#0FC87A',pointBorderColor:'#060F1E',pointBorderWidth:2,tension:0.3,pointRadius:5,fill:false,yAxisID:'yR',borderWidth:2.5},
+      {type:'line',label:'OPEX %',            data:opA, borderColor:'#F55252',pointBackgroundColor:'#F55252',pointBorderColor:'#060F1E',pointBorderWidth:2,tension:0.3,pointRadius:5,fill:false,yAxisID:'yR',borderWidth:2.5},
+    ]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{
+        backgroundColor:'rgba(7,20,40,0.95)',borderColor:'rgba(74,132,216,0.4)',borderWidth:1,
+        titleColor:'#E8F2FF',bodyColor:'#8DBEF3',padding:10,
+        callbacks:{label:ctx=>ctx.datasetIndex<=1?` ${ctx.dataset.label}: ${fmtM(ctx.raw??0)}`:(ctx.raw!=null?` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%`:` ${ctx.dataset.label}: —`)}
+      }},
+      scales:{
+        yL:{position:'left',ticks:{callback:v=>fmtM(v),font:{size:10,family:'JetBrains Mono'},color:'#4A6A9A'},grid:{color:'rgba(74,132,216,0.07)'},border:{color:'rgba(74,132,216,0.15)'}},
+        yR:{position:'right',min:0,max:110,ticks:{callback:v=>v+'%',font:{size:10,family:'JetBrains Mono'},color:'#4A6A9A'},grid:{display:false},border:{color:'rgba(74,132,216,0.15)'}},
+        x:{ticks:{font:{size:11,family:'Inter'},color:'#4A6A9A'},grid:{display:false},border:{color:'rgba(74,132,216,0.15)'}}
+      }
+    }
+  });
+}
+
+
+
+renderAll();
+</script>
+</body>
+</html>
