@@ -19,7 +19,7 @@
   --green:#0FC87A;--green-dim:rgba(15,200,122,0.15);--green-b:rgba(15,200,122,0.35);
   --amber:#F5A623;--amber-dim:rgba(245,166,35,0.15);--amber-b:rgba(245,166,35,0.35);
   --red:#F55252;--red-dim:rgba(245,82,82,0.15);--red-b:rgba(245,82,82,0.35);
-  --cyan:#22D3EE;--cyan-dim:rgba(34,211,238,0.12);
+  --cyan:#22D3EE;--cyan-dim:rgba(34,211,238,0.12);--cyan-b:rgba(34,211,238,0.3);
   /* Surfaces */
   --page:#060F1E;
   --glass:rgba(255,255,255,0.04);
@@ -117,6 +117,7 @@ body{
 .pills{display:flex;gap:6px;flex-wrap:wrap}
 .pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.04em}
 .pill.g{background:var(--green-dim);color:var(--green);border:1px solid var(--green-b)}
+.pill.cy{background:var(--cyan-dim);color:var(--cyan);border:1px solid var(--cyan-b)}
 .pill.a{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-b)}
 .pill.r{background:var(--red-dim);color:var(--red);border:1px solid var(--red-b)}
 
@@ -168,6 +169,7 @@ body{
 /* accent line at top */
 .tc-top{height:2px;width:100%}
 .tc-top.g{background:linear-gradient(90deg,#0FC87A,#22D3EE)}
+.tc-top.cy{background:linear-gradient(90deg,#22D3EE,#818CF8)}
 .tc-top.a{background:linear-gradient(90deg,#F5A623,#FDD835)}
 .tc-top.r{background:linear-gradient(90deg,#F55252,#FF8A65)}
 .tc-top.p{background:linear-gradient(90deg,var(--b450),var(--b350))}
@@ -196,6 +198,7 @@ body{
   font-family:'Outfit',sans-serif;letter-spacing:-0.02em;
 }
 .tc-val.g{color:var(--green)}
+.tc-val.cy{color:var(--cyan)}
 .tc-val.a{color:var(--amber)}
 .tc-val.r{color:var(--red)}
 .tc-val.p{color:var(--t3)}
@@ -210,6 +213,8 @@ body{
 .tc-badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
 .tc-badge.g{background:var(--green-dim);color:var(--green);border:1px solid var(--green-b)}
 .tc-badge.g::before{background:var(--green)}
+.tc-badge.cy{background:var(--cyan-dim);color:var(--cyan);border:1px solid var(--cyan-b)}
+.tc-badge.cy::before{background:var(--cyan)}
 .tc-badge.a{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-b)}
 .tc-badge.a::before{background:var(--amber)}
 .tc-badge.r{background:var(--red-dim);color:var(--red);border:1px solid var(--red-b)}
@@ -229,6 +234,7 @@ body{
 }
 .prog-fill{height:100%;border-radius:3px;transition:width 0.7s cubic-bezier(.34,1.56,.64,1)}
 .prog-fill.g{background:linear-gradient(90deg,#0FC87A,#22D3EE)}
+.prog-fill.cy{background:linear-gradient(90deg,#22D3EE,#818CF8)}
 .prog-fill.a{background:linear-gradient(90deg,#F5A623,#FDD835)}
 .prog-fill.r{background:linear-gradient(90deg,#F55252,#FF8A65)}
 .prog-fill.p{background:linear-gradient(90deg,var(--b500),var(--b400))}
@@ -239,7 +245,11 @@ body{
 
 /* ── DRILL PANEL ─────────────────────────────────────────────── */
 .drill{display:none;border-top:1px solid var(--border)}
-.drill.open{display:block}
+.drill.open{display:block;max-height:480px;overflow-y:auto;overflow-x:hidden}
+.drill.open::-webkit-scrollbar{width:5px}
+.drill.open::-webkit-scrollbar-track{background:rgba(0,0,0,0.2)}
+.drill.open::-webkit-scrollbar-thumb{background:var(--b600);border-radius:3px}
+.drill.open::-webkit-scrollbar-thumb:hover{background:var(--b500)}
 .d-inner{
   padding:18px;
   background:linear-gradient(180deg,rgba(7,20,40,0.98),rgba(4,13,26,0.99));
@@ -522,7 +532,7 @@ function status(t,a){
   return 'r';
 }
 const SLBL={s:'On Track — Stretch',t:'On Track for Target',th:'Threshold Only',r:'Needs Attention',p:'Awaiting Data'};
-const SCC={s:'g',t:'g',th:'a',r:'r',p:'p'};
+const SCC={s:'cy',t:'g',th:'a',r:'r',p:'p'};
 function dv(t,a){if(a==null)return '—';return t.fmt==='$'?fmtM(a):fmtP(a);}
 
 // ══ RENDER ════════════════════════════════════════════════════════
@@ -538,7 +548,8 @@ function setQ(q){aQ=q;openD=null;Object.values(dCharts).forEach(c=>c.destroy());
 
 function renderBanner(){
   const stats=T.map(t=>status(t,getA(t.id)));
-  const on=stats.filter(s=>s==='t'||s==='s').length;
+  const on=stats.filter(s=>s==='t').length;
+  const str=stats.filter(s=>s==='s').length;
   const th=stats.filter(s=>s==='th').length;
   const rf=stats.filter(s=>s==='r').length;
   const pd=stats.filter(s=>s==='p').length;
@@ -546,6 +557,7 @@ function renderBanner(){
   document.getElementById('banner').innerHTML=
     `<span>📋 <strong>Plan Status: Not Yet Funded</strong> — ${note}</span>
      <div class="pills">
+       ${str?`<span class="pill cy">${str} Stretch</span>`:''}
        ${on?`<span class="pill g">${on} On Track</span>`:''}
        ${th?`<span class="pill a">${th} Threshold Only</span>`:''}
        ${rf?`<span class="pill r">${rf} Needs Attention</span>`:''}
