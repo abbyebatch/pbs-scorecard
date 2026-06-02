@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PBS — 2026 Financial Scorecard</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+
+
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -38,7 +38,7 @@
 }
 
 body{
-  font-family:'Plus Jakarta Sans',sans-serif;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
   background:var(--page);
   color:var(--t1);
   min-height:100vh;
@@ -79,11 +79,11 @@ body{
   border-radius:11px;
   display:flex;align-items:center;justify-content:center;
   font-size:13px;font-weight:800;color:#fff;
-  font-family:'Outfit',monospace;
+  font-family:inherit;
   box-shadow:0 2px 8px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.15);
 }
 .hdr-t h1{font-size:18px;font-weight:700;color:var(--t1);letter-spacing:-0.025em}
-.hdr-t p{font-size:10px;color:var(--t3);margin-top:3px;font-family:'Outfit',sans-serif;letter-spacing:0.08em;text-transform:uppercase}
+.hdr-t p{font-size:10px;color:var(--t3);margin-top:3px;font-family:inherit;letter-spacing:0.08em;text-transform:uppercase}
 .hdr-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .qtabs{
   display:flex;gap:2px;
@@ -94,7 +94,7 @@ body{
 .qtab{
   font-size:12px;font-weight:600;padding:6px 18px;border-radius:7px;border:none;
   background:transparent;color:var(--t3);cursor:pointer;
-  transition:all 0.2s;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:0.01em;
+  transition:all 0.2s;font-family:inherit;letter-spacing:0.01em;
 }
 .qtab.active{
   background:linear-gradient(135deg,var(--b500),var(--b450));
@@ -139,7 +139,7 @@ body{
 .si:first-child{border-radius:8px 0 0 8px}
 .si:last-child{border-radius:0 8px 8px 0}
 .si-l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t3);margin-bottom:5px}
-.si-v{font-size:18px;font-weight:700;color:var(--b200);font-family:'Outfit',sans-serif;letter-spacing:-0.01em}
+.si-v{font-size:18px;font-weight:700;color:var(--b200);font-family:inherit;letter-spacing:-0.01em}
 .si-s{font-size:10px;color:var(--t4);margin-top:2px}
 
 /* ── TRIGGER GRID ────────────────────────────────────────────── */
@@ -187,7 +187,7 @@ body{
 
 .tc-val{
   font-size:34px;font-weight:700;line-height:1;margin-bottom:4px;
-  font-family:'Outfit',sans-serif;letter-spacing:-0.02em;
+  font-family:inherit;letter-spacing:-0.02em;
 }
 .tc-val.g{color:var(--green)}
 .tc-val.cy{color:var(--cyan)}
@@ -264,7 +264,7 @@ body{
 .it-badge.t1{background:rgba(245,166,35,0.15);color:var(--amber)}
 .it-badge.t2{background:rgba(46,99,188,0.2);color:var(--b250)}
 .it-badge.t3{background:var(--green-dim);color:var(--green)}
-.it-pay{font-size:26px;font-weight:800;color:var(--t1);font-family:'Outfit',sans-serif;margin-bottom:3px;letter-spacing:-0.02em}
+.it-pay{font-size:26px;font-weight:800;color:var(--t1);font-family:inherit;margin-bottom:3px;letter-spacing:-0.02em}
 .it-desc{font-size:12px;color:var(--t2)}
 .it-note{font-size:10px;color:var(--t4);margin-top:5px}
 
@@ -307,6 +307,73 @@ body{
 </style>
 </head>
 <body>
+
+<!-- ── PASSWORD GATE ── -->
+<div id="gate" style="
+  position:fixed;inset:0;z-index:9999;
+  background:#060F1E;
+  display:flex;align-items:center;justify-content:center;
+  background-image:radial-gradient(circle at 1px 1px,rgba(74,132,216,0.1) 1px,transparent 0);
+  background-size:28px 28px;
+">
+  <div style="
+    width:380px;max-width:92vw;
+    background:linear-gradient(160deg,#0D2448,#071428);
+    border:1px solid rgba(74,132,216,0.35);
+    border-radius:18px;
+    padding:40px 36px;
+    box-shadow:0 0 0 1px rgba(74,132,216,0.12),0 24px 60px rgba(0,0,0,0.6);
+    text-align:center;
+  ">
+    <div style="
+      width:52px;height:52px;margin:0 auto 20px;
+      background:linear-gradient(135deg,#2E63BC,#4A84D8);
+      border:1px solid rgba(74,132,216,0.5);
+      border-radius:13px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:15px;font-weight:800;color:#fff;
+      box-shadow:0 2px 8px rgba(0,0,0,0.4);
+    ">PBS</div>
+    <div style="font-size:18px;font-weight:700;color:#E8F2FF;margin-bottom:6px;letter-spacing:-0.02em;">
+      Financial Scorecard
+    </div>
+    <div style="font-size:12px;color:#4A6A9A;margin-bottom:28px;letter-spacing:0.03em;text-transform:uppercase;">
+      2026 · Confidential
+    </div>
+    <input id="pwInput" type="password" placeholder="Enter password"
+      onkeydown="if(event.key==='Enter')checkPw()"
+      style="
+        width:100%;padding:12px 14px;
+        background:rgba(0,0,0,0.35);
+        border:1px solid rgba(74,132,216,0.3);
+        border-radius:10px;
+        color:#E8F2FF;font-size:14px;
+        outline:none;margin-bottom:12px;
+        font-family:inherit;
+        transition:border-color 0.2s;
+      "
+      onfocus="this.style.borderColor='rgba(74,132,216,0.7)'"
+      onblur="this.style.borderColor='rgba(74,132,216,0.3)'"
+    >
+    <div id="pwErr" style="
+      font-size:12px;color:#F55252;
+      margin-bottom:10px;min-height:18px;
+      transition:opacity 0.2s;
+    "></div>
+    <button onclick="checkPw()" style="
+      width:100%;padding:12px;
+      background:linear-gradient(135deg,#2E63BC,#3872CC);
+      border:none;border-radius:10px;
+      color:#fff;font-size:14px;font-weight:700;
+      cursor:pointer;font-family:inherit;
+      transition:opacity 0.15s;
+    "
+    onmouseover="this.style.opacity='0.88'"
+    onmouseout="this.style.opacity='1'"
+    >Access Dashboard</button>
+  </div>
+</div>
+
 <div class="page">
 
 <!-- HEADER -->
@@ -363,7 +430,7 @@ body{
       <div class="leg"><div class="leg-dot" style="background:#F55252"></div>OPEX %</div>
     </div>
   </div>
-  <div class="trend-wrap"><canvas id="tChart" role="img" aria-label="Quarterly revenue and ratio trends">Trend chart</canvas></div>
+  <div class="trend-wrap" id="trendWrap"></div>
 </div>
 
 </div><!-- /page -->
@@ -371,6 +438,26 @@ body{
 
 
 <script>
+// ══════════════════════════════════════════════════════════════════
+//  🔒 PASSWORD — change this to whatever you want
+// ══════════════════════════════════════════════════════════════════
+const DASHBOARD_PASSWORD = 'PBS2026';
+
+function checkPw(){
+  const input = document.getElementById('pwInput').value;
+  if(input === DASHBOARD_PASSWORD){
+    document.getElementById('gate').style.display='none';
+    renderAll();
+  } else {
+    const err = document.getElementById('pwErr');
+    err.textContent = 'Incorrect password. Please try again.';
+    document.getElementById('pwInput').value='';
+    document.getElementById('pwInput').focus();
+    setTimeout(()=>err.textContent='', 3000);
+  }
+}
+// ══════════════════════════════════════════════════════════════════
+
 // ══ TRIGGER DEFINITIONS ═══════════════════════════════════════════
 const T=[
   {id:'rev',name:'Revenue',dept:'Sales',dir:'up',fmt:'$',wide:true,
@@ -456,18 +543,13 @@ const SEED={
     rev:{a:null},cogs:{a:null},gm:{a:null},payroll:{a:null},opex:{a:null},depr:{a:null},npi:{a:null}},
 };
 
-// Q2 monthly pace targets for revenue
-const PACE={Jan:806000,Feb:806000,Mar:806000,Apr:806000,May:806000,Jun:806000,YTD:9670000};
+let aQ='YTD';
 
-let S=JSON.parse(localStorage.getItem('pbs26v4')||'null')||JSON.parse(JSON.stringify(SEED));
-let aQ='YTD',tChart=null;
-
-function save(){try{localStorage.setItem('pbs26v4',JSON.stringify(S));}catch(e){}}
 const fmtM=v=>v>=1e6?'$'+(v/1e6).toFixed(3).replace(/0+$/,'').replace(/\.$/,'')+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+Math.round(v).toLocaleString();
 const fmtP=v=>v!=null?v.toFixed(1)+'%':'—';
 
 function getA(id){
-  return S[aQ]?.[id]?.a??null;
+  return SEED[aQ]?.[id]?.a??null;
 }
 function status(t,a){
   if(a==null)return 'p';
@@ -499,7 +581,7 @@ function renderBanner(){
   const th=stats.filter(s=>s==='th').length;
   const rf=stats.filter(s=>s==='r').length;
   const pd=stats.filter(s=>s==='p').length;
-  const note=S[aQ]?.note||'';
+  const note=SEED[aQ]?.note||'';
   document.getElementById('banner').innerHTML=
     `<span>📋 <strong>Plan Status: Not Yet Funded</strong> — ${note}</span>
      <div class="pills">
@@ -544,42 +626,83 @@ function cardHTML(t){
   </div>`;
 }
 
-// ══ TREND ═════════════════════════════════════════════════════════
+// ══ TREND — pure SVG, zero external dependencies ═════════════════
 function renderTrend(){
-  if(tChart){tChart.destroy();tChart=null;}
+  const wrap=document.getElementById('trendWrap');
+  if(!wrap)return;
   const months=['Jan','Feb','Mar','Apr','May','Jun'];
-  const revA=months.map(m=>S[m]?.rev?.a??null);
-  const revPace=months.map(()=>9670000/12); // monthly pace target
-  const opA=months.map(m=>S[m]?.opex?.a??null);
-  const gmA=months.map(m=>S[m]?.gm?.a??null);
-  tChart=new Chart(document.getElementById('tChart'),{
-    type:'bar',
-    data:{labels:months,datasets:[
-      {type:'bar', label:'Revenue actual',  data:revA,backgroundColor:'rgba(74,132,216,0.55)',borderColor:'#4A84D8',borderWidth:1,yAxisID:'yL',borderRadius:4},
-      {type:'line',label:'Monthly pace',    data:revPace,borderColor:'rgba(74,132,216,0.35)',borderDash:[5,4],pointRadius:0,tension:0,fill:false,yAxisID:'yL',borderWidth:1.5},
-      {type:'line',label:'Gross Margin %',  data:gmA,borderColor:'#0FC87A',pointBackgroundColor:'#0FC87A',pointBorderColor:'#060F1E',pointBorderWidth:2,tension:0.3,pointRadius:5,fill:false,yAxisID:'yR',borderWidth:2.5},
-      {type:'line',label:'OPEX %',          data:opA,borderColor:'#F55252',pointBackgroundColor:'#F55252',pointBorderColor:'#060F1E',pointBorderWidth:2,tension:0.3,pointRadius:5,fill:false,yAxisID:'yR',borderWidth:2.5},
-    ]},
-    options:{
-      responsive:true,maintainAspectRatio:false,
-      interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{
-        backgroundColor:'rgba(7,20,40,0.95)',borderColor:'rgba(74,132,216,0.4)',borderWidth:1,
-        titleColor:'#E8F2FF',bodyColor:'#8DBEF3',padding:10,
-        callbacks:{label:ctx=>ctx.datasetIndex<=1?` ${ctx.dataset.label}: ${fmtM(ctx.raw??0)}`:(ctx.raw!=null?` ${ctx.dataset.label}: ${ctx.raw.toFixed(1)}%`:` ${ctx.dataset.label}: —`)}
-      }},
-      scales:{
-        yL:{position:'left',ticks:{callback:v=>fmtM(v),font:{size:10,family:'Outfit'},color:'#4A6A9A'},grid:{color:'rgba(74,132,216,0.07)'},border:{color:'rgba(74,132,216,0.15)'}},
-        yR:{position:'right',min:0,max:110,ticks:{callback:v=>v+'%',font:{size:10,family:'Outfit'},color:'#4A6A9A'},grid:{display:false},border:{color:'rgba(74,132,216,0.15)'}},
-        x:{ticks:{font:{size:11,family:'Plus Jakarta Sans'},color:'#4A6A9A'},grid:{display:false},border:{color:'rgba(74,132,216,0.15)'}}
-      }
-    }
+  const revData=months.map(m=>SEED[m]?.rev?.a??null);
+  const gmData=months.map(m=>SEED[m]?.gm?.a??null);
+  const opData=months.map(m=>SEED[m]?.opex?.a??null);
+  const pace=9670000/12;
+
+  const W=wrap.clientWidth||800,H=210;
+  const PL=58,PR=50,PT=16,PB=34;
+  const cW=W-PL-PR,cH=H-PT-PB;
+  const n=months.length;
+  const barW=Math.floor(cW/n*0.45);
+  const maxRev=Math.max(...revData.filter(v=>v!=null),pace)*1.18;
+  const ry=v=>PT+cH-(v/maxRev)*cH;
+  const bx=i=>PL+(i/n)*cW+(cW/n-barW)/2;
+  const py=v=>PT+cH-(Math.min(v,110)/110)*cH;
+  const px=i=>PL+(i/(n-1))*cW;
+  const fmtK=v=>v>=1e6?'$'+(v/1e6).toFixed(1)+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+v;
+
+  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:${H}px;display:block">
+  <defs><clipPath id="cp"><rect x="${PL}" y="${PT}" width="${cW}" height="${cH}"/></clipPath></defs>`;
+
+  // grid + left axis
+  [0,250000,500000,750000,1000000].forEach(v=>{
+    const y=ry(v);
+    svg+=`<line x1="${PL}" y1="${y.toFixed(1)}" x2="${PL+cW}" y2="${y.toFixed(1)}" stroke="rgba(74,132,216,0.1)" stroke-width="1"/>`;
+    svg+=`<text x="${PL-6}" y="${(y+4).toFixed(1)}" text-anchor="end" font-size="9" fill="#4A6A9A" font-family="inherit">${fmtK(v)}</text>`;
   });
+  // right axis
+  [0,25,50,75,100].forEach(v=>{
+    const y=py(v);
+    svg+=`<text x="${PL+cW+6}" y="${(y+4).toFixed(1)}" text-anchor="start" font-size="9" fill="#4A6A9A" font-family="inherit">${v}%</text>`;
+  });
+
+  // monthly pace dashed line
+  const paceY=ry(pace).toFixed(1);
+  svg+=`<line x1="${PL}" y1="${paceY}" x2="${PL+cW}" y2="${paceY}" stroke="rgba(74,132,216,0.45)" stroke-width="1.5" stroke-dasharray="5,4"/>`;
+
+  // revenue bars
+  revData.forEach((v,i)=>{
+    if(v==null)return;
+    const x=bx(i).toFixed(1),y=ry(v).toFixed(1),h=(cH-(ry(v)-PT)).toFixed(1);
+    svg+=`<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="3" fill="rgba(74,132,216,0.55)" stroke="#4A84D8" stroke-width="1"/>`;
+  });
+
+  // GM line + dots
+  const gmValid=gmData.map((v,i)=>({v,i})).filter(d=>d.v!=null);
+  if(gmValid.length>1){
+    const pts=gmValid.map(d=>`${px(d.i).toFixed(1)},${py(d.v).toFixed(1)}`).join(' ');
+    svg+=`<polyline points="${pts}" fill="none" stroke="#0FC87A" stroke-width="2.5" stroke-linejoin="round" clip-path="url(#cp)"/>`;
+    gmValid.forEach(d=>svg+=`<circle cx="${px(d.i).toFixed(1)}" cy="${py(d.v).toFixed(1)}" r="4" fill="#0FC87A" stroke="#060F1E" stroke-width="2"/>`);
+  }
+
+  // OPEX line + dots
+  const opValid=opData.map((v,i)=>({v,i})).filter(d=>d.v!=null);
+  if(opValid.length>1){
+    const pts=opValid.map(d=>`${px(d.i).toFixed(1)},${py(d.v).toFixed(1)}`).join(' ');
+    svg+=`<polyline points="${pts}" fill="none" stroke="#F55252" stroke-width="2.5" stroke-linejoin="round" clip-path="url(#cp)"/>`;
+    opValid.forEach(d=>svg+=`<circle cx="${px(d.i).toFixed(1)}" cy="${py(d.v).toFixed(1)}" r="4" fill="#F55252" stroke="#060F1E" stroke-width="2"/>`);
+  }
+
+  // x labels
+  months.forEach((m,i)=>{
+    const cx=(PL+(i/n)*cW+cW/n/2).toFixed(1);
+    svg+=`<text x="${cx}" y="${H-10}" text-anchor="middle" font-size="10" fill="#4A6A9A" font-family="inherit">${m}</text>`;
+  });
+
+  svg+=`</svg>`;
+  wrap.innerHTML=svg;
 }
 
 
 
-renderAll();
+// Dashboard renders only after correct password is entered above
 </script>
 </body>
 </html>
