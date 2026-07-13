@@ -304,6 +304,21 @@ body{
   .snap-grid{grid-template-columns:repeat(2,1fr)}
   .di{grid-template-columns:100px 1fr 44px 40px}
 }
+
+/* ── Monthly breakdown panel ─────────────────────── */
+.mo-toggle{display:flex;align-items:center;gap:8px;margin:0 0 12px;cursor:pointer;width:fit-content}
+.mo-toggle-btn{background:rgba(74,132,216,0.15);border:1px solid rgba(74,132,216,0.35);color:var(--b200);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;cursor:pointer;transition:background .15s,border-color .15s;font-family:inherit;letter-spacing:.03em}
+.mo-toggle-btn:hover{background:rgba(74,132,216,0.28);border-color:var(--b400)}
+.mo-toggle-btn.active{background:rgba(74,132,216,0.30);border-color:var(--b300)}
+.mo-panel{background:rgba(10,22,50,0.6);border:1px solid rgba(74,132,216,0.18);border-radius:12px;padding:16px 20px;margin-bottom:20px;overflow-x:auto}
+.mo-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}
+.mo-table th{text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--b300);padding:6px 14px 8px;border-bottom:1px solid rgba(74,132,216,0.2)}
+.mo-table th:first-child{color:var(--t2)}
+.mo-table td{padding:8px 14px;border-bottom:1px solid rgba(74,132,216,0.08);color:var(--t1);font-variant-numeric:tabular-nums}
+.mo-table tr:last-child td{border-bottom:none}
+.mo-table td:first-child{font-weight:600;color:var(--b200)}
+.mo-val{font-weight:500}
+.mo-val.g{color:#0FC87A}.mo-val.cy{color:#22D3EE}.mo-val.a{color:#F5A623}.mo-val.r{color:#F55252}
 </style>
 </head>
 <body>
@@ -407,7 +422,8 @@ body{
 </div>
 
 <!-- TRIGGER GRID -->
-<div class="tgrid" id="tgrid"></div>
+<div id="moWrap" style="margin-bottom:4px"></div>
+  <div class="tgrid" id="tgrid"></div>
 
 <!-- INCENTIVE TIERS -->
 <div class="incent">
@@ -505,44 +521,33 @@ const T=[
        {lbl:'Software & Tools',  a:3.8, t:3.0, c:'#22D3EE',note:'Increased tooling investment'},
        {lbl:'G&A / Admin',       a:3.4, t:1.5, c:'#F55252',note:'Primary overage driver — needs review'},
      ],unit:'%',note:'Q1 actuals. G&A and Marketing are primary drivers of 1.7% overage vs. target.'}},
-  {id:'depr',name:'Depreciation',dept:'Sales',dir:'up',fmt:'%',
-   thresh:15,target:15,stretch:15,
-   drill:{title:'Depreciation by Asset Class',sub:'Depreciation as % of revenue by category',
-     items:[
-       {lbl:'Print Equipment',   a:5.2,t:9.0,c:'#4A84D8',note:'Largest class — well below target'},
-       {lbl:'IT Infrastructure', a:1.8,t:3.0,c:'#F5A623',note:'Servers, network equipment'},
-       {lbl:'Vehicles / Fleet',  a:0.6,t:1.5,c:'#8DBEF3',note:'Fleet below expected pace'},
-       {lbl:'Leasehold Improv.', a:0.5,t:1.5,c:'#A78BFA',note:'Tenant improvement amortization'},
-     ],unit:'%',note:'Significant 6.9% gap vs. 15% target. May require capital investment review.'}},
-   thresh:81,target:100,stretch:113,
-   drill:{title:'NPI — Key Drivers',sub:'Factors impacting net profit vs. plan',
-     items:[
-       {lbl:'Revenue vs. plan',  a:8.1,  t:25.0,c:'#4A84D8',note:'Below revenue pace — primary drag'},
-       {lbl:'COGS efficiency',   a:3.2,  t:3.0, c:'#0FC87A',note:'Slight favorable vs. plan'},
-       {lbl:'OPEX overrun',      a:-4.8, t:0,   c:'#F55252',note:'1.7% OPEX over target = NPI drag'},
-       {lbl:'Depreciation gap',  a:-6.9, t:0,   c:'#F5A623',note:'8.1% vs 15% target is key drag'},
-     ],unit:'%',note:'NPI at 13.5% vs. 100% target. Revenue ramp + OPEX reduction are highest-leverage levers.'}},
 ];
 
 // ══ STATE ═════════════════════════════════════════════════════════
 const SEED={
-  Jan:{note:'January 2026 actuals',
-    rev:{a:861520}, cogs:{a:20.73}, gm:{a:79.3}, payroll:{a:30.7}, opex:{a:45.88}, depr:{a:0.66}},
-  Feb:{note:'February 2026 actuals',
-    rev:{a:596649}, cogs:{a:39.27}, gm:{a:60.7}, payroll:{a:34.21}, opex:{a:53.66}, depr:{a:15.79}},
-  Mar:{note:'March 2026 actuals',
-    rev:{a:661349}, cogs:{a:30.11}, gm:{a:69.9}, payroll:{a:30.21}, opex:{a:51.95}, depr:{a:10.92}},
-  Apr:{note:'April 2026 actuals',
-    rev:{a:799684}, cogs:{a:16.22}, gm:{a:83.8}, payroll:{a:25.26}, opex:{a:48.43}, depr:{a:13.67}},
+  Q1:{note:'Q1 2026 actuals (Jan–Mar)',
+    rev:{a:2119518}, cogs:{a:30.04}, gm:{a:69.97}, payroll:{a:31.71}, opex:{a:50.52},
+    months:[
+      {label:'Jan', rev:861520,  cogs:20.73, gm:79.3, payroll:30.7,  opex:45.88},
+      {label:'Feb', rev:596649,  cogs:39.27, gm:60.7, payroll:34.21, opex:53.66},
+      {label:'Mar', rev:661349,  cogs:30.11, gm:69.9, payroll:30.21, opex:51.95},
+    ]},
+  Q2:{note:'Q2 2026 actuals (Apr–Jun)',
+    rev:{a:2206474}, cogs:{a:27.50}, gm:{a:72.43}, payroll:{a:32.51}, opex:{a:51.52},
+    months:[
+      {label:'Apr', rev:799684,  cogs:16.22, gm:83.8, payroll:25.26, opex:48.43},
+      {label:'May', rev:678871,  cogs:28.87, gm:71.1, payroll:42.27, opex:60.92},
+      {label:'Jun', rev:728119,  cogs:37.62, gm:62.4, payroll:29.99, opex:45.42},
+    ]},
+  Q3:{note:'Q3 2026 — awaiting actuals',
+    rev:{a:null}, cogs:{a:null}, gm:{a:null}, payroll:{a:null}, opex:{a:null}, months:[]},
+  Q4:{note:'Q4 2026 — awaiting actuals',
+    rev:{a:null}, cogs:{a:null}, gm:{a:null}, payroll:{a:null}, opex:{a:null}, months:[]},
   YTD:{note:'YTD 2026 (Jan–Jun actuals)',
-    rev:{a:4326192},cogs:{a:28.0}, gm:{a:72.0}, payroll:{a:31.8}, opex:{a:50.64}, depr:{a:12.54}},
-  May:{note:'May 2026 actuals',
-    rev:{a:678871},cogs:{a:28.9},gm:{a:71.1},payroll:{a:42.3},opex:{a:60.9},depr:{a:29.5}},
-  Jun:{note:'June 2026 actuals',
-    rev:{a:728119},cogs:{a:37.6},gm:{a:62.4},payroll:{a:30.0},opex:{a:45.4},depr:{a:8.4}},
+    rev:{a:4326192}, cogs:{a:28.0}, gm:{a:72.0}, payroll:{a:31.8}, opex:{a:50.64}, months:[]},
 };
 
-let aQ='YTD';
+let aQ='Q1', showMonths=false;
 
 const fmtM=v=>v>=1e6?'$'+(v/1e6).toFixed(3).replace(/0+$/,'').replace(/\.$/,'')+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+Math.round(v).toLocaleString();
 const fmtP=v=>v!=null?v.toFixed(1)+'%':'—';
@@ -563,15 +568,56 @@ const SCC={s:'cy',t:'g',th:'a',r:'r',p:'p'};
 function dv(t,a){if(a==null)return '—';return t.fmt==='$'?fmtM(a):fmtP(a);}
 
 // ══ RENDER ════════════════════════════════════════════════════════
-function renderAll(){renderTabs();renderBanner();renderGrid();renderTrend();}
+function renderAll(){renderTabs();renderBanner();renderMonthlyToggle();renderGrid();renderTrend();}
 
 function renderTabs(){
   const el=document.getElementById('qTabs');if(!el)return;
-  el.innerHTML=['Jan','Feb','Mar','Apr','May','Jun','YTD'].map(m=>
+  el.innerHTML=['Q1','Q2','Q3','Q4','YTD'].map(m=>
     `<button class="qtab ${m===aQ?'active':''}" onclick="setQ('${m}')">${m}</button>`
   ).join('');
 }
-function setQ(q){aQ=q;renderAll();}
+function setQ(q){aQ=q;showMonths=false;renderAll();}
+function toggleMonths(){showMonths=!showMonths;renderMonthlyToggle();}
+
+function renderMonthlyToggle(){
+  const el=document.getElementById('moWrap');if(!el)return;
+  const months=SEED[aQ]?.months||[];
+  // Only show toggle for quarters with monthly data
+  if(!['Q1','Q2','Q3','Q4'].includes(aQ)||months.length===0){el.innerHTML='';return;}
+  const metrics=[
+    {id:'rev',  label:'Revenue', fmt:'$'},
+    {id:'cogs', label:'COGS %',  fmt:'%'},
+    {id:'gm',   label:'GM %',    fmt:'%'},
+    {id:'payroll',label:'Payroll %',fmt:'%'},
+    {id:'opex', label:'OPEX %',  fmt:'%'},
+  ];
+  const fmtVal=(v,fmt)=>fmt==='$'?fmtM(v):v.toFixed(1)+'%';
+  // Color a % value against target direction
+  const cc=(id,v)=>{
+    const t=T.find(x=>x.id===id);if(!t||v==null)return '';
+    const st=status(t,v);return SCC[st];
+  };
+  let rows=months.map(m=>{
+    const cells=metrics.map(mt=>{
+      const v=m[mt.id];
+      const cls=mt.fmt==='%'?cc(mt.id,v):'';
+      return `<td><span class="mo-val ${cls}">${fmtVal(v,mt.fmt)}</span></td>`;
+    }).join('');
+    return `<tr><td>${m.label}</td>${cells}</tr>`;
+  }).join('');
+  let heads=metrics.map(m=>`<th>${m.label}</th>`).join('');
+  el.innerHTML=`
+    <button class="mo-toggle-btn ${showMonths?'active':''}" onclick="toggleMonths()">
+      ${showMonths?'▲ Hide Monthly Breakdown':'▼ Monthly Breakdown'}
+    </button>
+    ${showMonths?`<div class="mo-panel">
+      <table class="mo-table">
+        <thead><tr><th>Month</th>${heads}</tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`:''}`;
+}
+
 
 function renderBanner(){
   const stats=T.map(t=>status(t,getA(t.id)));
@@ -605,7 +651,7 @@ function cardHTML(t){
     else{const lo=t.stretch*.85,hi=t.thresh*1.15;fp=Math.max(0,Math.min(100,((hi-a)/(hi-lo))*100));mp=Math.max(0,Math.min(100,((hi-t.target)/(hi-lo))*100));}
   }
   const goalStr=t.fmt==='$'
-    ? (aQ==='YTD' ? `YTD actual: ${dv(t,a)} &nbsp;·&nbsp; Annual target: ${fmtM(t.target)}` : `Monthly actual: ${dv(t,a)} &nbsp;·&nbsp; Annual target: ${fmtM(t.target)}`)
+    ? (aQ==='YTD' ? `YTD actual: ${dv(t,a)} &nbsp;·&nbsp; Annual target: ${fmtM(t.target)}` : `Quarterly actual: ${dv(t,a)} &nbsp;·&nbsp; Annual target: ${fmtM(t.target)}`)
     :`Goal: ${t.dir==='up'?'≥':'≤'}${t.target}${t.fmt}`;
   return `<div class="tc ${t.wide?'wide':''}">
     <div class="tc-top ${cc}"></div>
@@ -629,13 +675,13 @@ function cardHTML(t){
 function renderTrend(){
   const wrap=document.getElementById('trendWrap');
   if(!wrap)return;
-  const months=['Jan','Feb','Mar','Apr','May','Jun'];
+  const months=['Q1','Q2','Q3','Q4'];
   const revData=months.map(m=>SEED[m]?.rev?.a??null);
   const gmData=months.map(m=>SEED[m]?.gm?.a??null);
   const opData=months.map(m=>SEED[m]?.opex?.a??null);
-  const pace=9670000/12;
+  const pace=9670000/4; // quarterly pace
 
-  const W=wrap.clientWidth||800,H=210;
+  const W=Math.max(wrap.clientWidth||0, 400),H=210;
   const PL=58,PR=50,PT=16,PB=34;
   const cW=W-PL-PR,cH=H-PT-PB;
   const n=months.length;
