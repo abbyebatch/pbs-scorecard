@@ -514,7 +514,6 @@ const T=[
        {lbl:'Vehicles / Fleet',  a:0.6,t:1.5,c:'#8DBEF3',note:'Fleet below expected pace'},
        {lbl:'Leasehold Improv.', a:0.5,t:1.5,c:'#A78BFA',note:'Tenant improvement amortization'},
      ],unit:'%',note:'Significant 6.9% gap vs. 15% target. May require capital investment review.'}},
-  {id:'npi',name:'Net Profit Index %',dept:'Finance',dir:'up',fmt:'%',
    thresh:81,target:100,stretch:113,
    drill:{title:'NPI — Key Drivers',sub:'Factors impacting net profit vs. plan',
      items:[
@@ -528,19 +527,19 @@ const T=[
 // ══ STATE ═════════════════════════════════════════════════════════
 const SEED={
   Jan:{note:'January 2026 actuals',
-    rev:{a:861520}, cogs:{a:20.73}, gm:{a:79.3}, payroll:{a:30.7}, opex:{a:45.88}, depr:{a:0.66},  npi:{a:null}},
+    rev:{a:861520}, cogs:{a:20.73}, gm:{a:79.3}, payroll:{a:30.7}, opex:{a:45.88}, depr:{a:0.66}},
   Feb:{note:'February 2026 actuals',
-    rev:{a:596649}, cogs:{a:39.27}, gm:{a:60.7}, payroll:{a:34.21}, opex:{a:53.66}, depr:{a:15.79}, npi:{a:null}},
+    rev:{a:596649}, cogs:{a:39.27}, gm:{a:60.7}, payroll:{a:34.21}, opex:{a:53.66}, depr:{a:15.79}},
   Mar:{note:'March 2026 actuals',
-    rev:{a:661349}, cogs:{a:30.11}, gm:{a:69.9}, payroll:{a:30.21}, opex:{a:51.95}, depr:{a:10.92}, npi:{a:null}},
+    rev:{a:661349}, cogs:{a:30.11}, gm:{a:69.9}, payroll:{a:30.21}, opex:{a:51.95}, depr:{a:10.92}},
   Apr:{note:'April 2026 actuals',
-    rev:{a:799684}, cogs:{a:16.22}, gm:{a:83.8}, payroll:{a:25.26}, opex:{a:48.43}, depr:{a:13.67}, npi:{a:null}},
+    rev:{a:799684}, cogs:{a:16.22}, gm:{a:83.8}, payroll:{a:25.26}, opex:{a:48.43}, depr:{a:13.67}},
   YTD:{note:'YTD 2026 (Jan–Jun actuals)',
-    rev:{a:4326192},cogs:{a:28.0}, gm:{a:72.0}, payroll:{a:31.8}, opex:{a:50.64}, depr:{a:12.54},  npi:{a:null}},
+    rev:{a:4326192},cogs:{a:28.0}, gm:{a:72.0}, payroll:{a:31.8}, opex:{a:50.64}, depr:{a:12.54}},
   May:{note:'May 2026 actuals',
-    rev:{a:678871},cogs:{a:28.9},gm:{a:71.1},payroll:{a:42.3},opex:{a:60.9},depr:{a:29.5},npi:{a:null}},
+    rev:{a:678871},cogs:{a:28.9},gm:{a:71.1},payroll:{a:42.3},opex:{a:60.9},depr:{a:29.5}},
   Jun:{note:'June 2026 actuals',
-    rev:{a:728119},cogs:{a:37.6},gm:{a:62.4},payroll:{a:30.0},opex:{a:45.4},depr:{a:8.4},npi:{a:null}},
+    rev:{a:728119},cogs:{a:37.6},gm:{a:62.4},payroll:{a:30.0},opex:{a:45.4},depr:{a:8.4}},
 };
 
 let aQ='YTD';
