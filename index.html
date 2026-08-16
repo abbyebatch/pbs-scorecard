@@ -1,753 +1,717 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PBS — 2026 Financial Scorecard</title>
-
-
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Weekly Scorecard Dashboard</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  /* Blues — the whole spectrum */
-  --b950:#040D1A;--b900:#071428;--b850:#0A1C38;--b800:#0D2448;
-  --b750:#112C58;--b700:#163568;--b650:#1B3F7A;--b600:#214A8E;
-  --b550:#2756A4;--b500:#2E63BC;--b450:#3872CC;--b400:#4A84D8;
-  --b350:#5E97E2;--b300:#74AAEB;--b250:#8DBEF3;--b200:#A8D0F8;
-  --b150:#C4E0FB;--b100:#DDF0FE;--b50:#EDF7FF;
-  /* Semantic */
-  --green:#0FC87A;--green-dim:rgba(15,200,122,0.15);--green-b:rgba(15,200,122,0.35);
-  --amber:#F5A623;--amber-dim:rgba(245,166,35,0.15);--amber-b:rgba(245,166,35,0.35);
-  --red:#F55252;--red-dim:rgba(245,82,82,0.15);--red-b:rgba(245,82,82,0.35);
-  --cyan:#22D3EE;--cyan-dim:rgba(34,211,238,0.12);--cyan-b:rgba(34,211,238,0.3);
-  /* Surfaces */
-  --page:#060F1E;
-  --glass:rgba(255,255,255,0.04);
-  --glass2:rgba(255,255,255,0.07);
-  --glass3:rgba(255,255,255,0.10);
-  --border:rgba(74,132,216,0.18);
-  --border2:rgba(74,132,216,0.32);
-  --border3:rgba(74,132,216,0.5);
-  /* Text */
-  --t1:#E8F2FF;--t2:#8DBEF3;--t3:#4A6A9A;--t4:#2A4470;
-  /* Shadows — clean depth, no glow */
-  --sh:0 1px 0 rgba(255,255,255,0.04),0 4px 20px rgba(0,0,0,0.3);
-  --sh-card:0 0 0 1px rgba(74,132,216,0.12),0 4px 20px rgba(0,0,0,0.35);
-  --sh-hover:0 0 0 1px rgba(74,132,216,0.3),0 8px 32px rgba(0,0,0,0.45);
-  --r:10px;--rlg:14px;--rxl:18px;
+  --bg:#080b10;--s1:#0d1117;--s2:#131920;--s3:#1a2230;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#e2e8f0;--muted:#64748b;
+  --blue:#3b82f6;--cyan:#06b6d4;--green:#10b981;
+  --amber:#f59e0b;--red:#ef4444;--orange:#f97316;--violet:#8b5cf6;
+  --gold:#b45309;--gold-light:#fef3c7;--gold-border:#d97706;
+  --svc:#3b82f6;--tss:#10b981;--corey:#f97316;--prod:#d97706;
 }
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:Segoe UI,system-ui,sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+.wrap{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:28px 24px 60px;}
+header{display:flex;align-items:flex-end;justify-content:space-between;padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:14px;}
+.logo h1{font-size:2rem;font-weight:800;letter-spacing:-0.5px;background:linear-gradient(135deg,#e2e8f0,#3b82f6 60%,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1;}
+.logo p{font-size:0.68rem;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-top:5px;}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.tab{font-size:0.72rem;padding:7px 15px;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--s2);color:var(--muted);transition:all 0.18s;font-family:inherit;white-space:nowrap;}
+.tab:hover{border-color:var(--border2);color:var(--text);}
+.tab.on{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 0 18px rgba(59,130,246,0.35);}
 
-body{
-  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-  background:var(--page);
-  color:var(--t1);
-  min-height:100vh;
-  line-height:1.5;
-  background-image:radial-gradient(circle at 1px 1px, rgba(74,132,216,0.08) 1px, transparent 0);
-  background-size:28px 28px;
-}
+/* SECTION HEADERS */
+.sh{display:flex;align-items:center;gap:10px;margin:30px 0 16px;}
+.sh .pip{width:4px;height:20px;border-radius:2px;flex-shrink:0;}
+.sh h2{font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);}
+.sh .rl{flex:1;height:1px;background:var(--border);}
 
+/* KPI CARDS */
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:18px;}
+.kpi{background:var(--s1);border:1px solid var(--border);border-radius:10px;padding:14px 15px;position:relative;overflow:hidden;transition:transform 0.18s,border-color 0.18s;}
+.kpi:hover{transform:translateY(-2px);border-color:var(--border2);}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:10px 10px 0 0;}
+.kpi.sv::after{background:var(--svc);}.kpi.ts::after{background:var(--tss);}.kpi.co::after{background:var(--corey);}.kpi.pr::after{background:var(--prod);}
+.kpi-l{font-size:0.59rem;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;line-height:1.35;}
+.kpi-v{font-size:1.5rem;font-weight:700;line-height:1;color:var(--text);font-variant-numeric:tabular-nums;}
+.kpi-s{font-size:0.59rem;color:var(--muted);margin-top:3px;}
 
-.page{max-width:1200px;margin:0 auto;padding:28px 20px 70px;position:relative;z-index:1}
+/* TABLES */
+.tw{background:var(--s1);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:18px;overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:0.79rem;min-width:600px;}
+thead th{background:var(--s2);padding:10px 13px;font-size:0.59rem;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border);text-align:right;white-space:nowrap;}
+thead th:first-child{text-align:left;}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.12s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--s2);}
+tbody td{padding:10px 13px;text-align:right;font-size:0.76rem;color:var(--text);font-variant-numeric:tabular-nums;white-space:nowrap;}
+tbody td:first-child{text-align:left;font-weight:600;font-size:0.8rem;}
+.tr td{background:var(--s3);border-top:1px solid var(--border2);color:var(--cyan);font-weight:700;}
 
-/* ── HEADER ─────────────────────────────────────────────────── */
-.hdr{
-  background:linear-gradient(135deg,var(--b800) 0%,var(--b700) 50%,var(--b600) 100%);
-  border:1px solid var(--border2);
-  border-radius:var(--rxl);
-  padding:22px 28px;
-  margin-bottom:16px;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;
-  position:relative;overflow:hidden;
-  box-shadow:var(--sh);
-}
-.hdr::before{
-  content:'';position:absolute;right:-80px;top:-80px;
-  width:300px;height:300px;border-radius:50%;
-  background:radial-gradient(circle,rgba(94,151,226,0.15) 0%,transparent 65%);
-  pointer-events:none;
-}
-.hdr::after{
-  content:'';position:absolute;left:0;bottom:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(94,151,226,0.5),transparent);
-}
-.hdr-brand{display:flex;align-items:center;gap:14px}
-.hdr-logo{
-  width:44px;height:44px;
-  background:linear-gradient(135deg,var(--b500),var(--b400));
-  border:1px solid var(--border3);
-  border-radius:11px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:800;color:#fff;
-  font-family:inherit;
-  box-shadow:0 2px 8px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.15);
-}
-.hdr-t h1{font-size:18px;font-weight:700;color:var(--t1);letter-spacing:-0.025em}
-.hdr-t p{font-size:10px;color:var(--t3);margin-top:3px;font-family:inherit;letter-spacing:0.08em;text-transform:uppercase}
-.hdr-r{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.qtabs{
-  display:flex;gap:2px;
-  background:rgba(0,0,0,0.3);
-  border:1px solid var(--border);
-  border-radius:9px;padding:3px;
-}
-.qtab{
-  font-size:12px;font-weight:600;padding:6px 18px;border-radius:7px;border:none;
-  background:transparent;color:var(--t3);cursor:pointer;
-  transition:all 0.2s;font-family:inherit;letter-spacing:0.01em;
-}
-.qtab.active{
-  background:linear-gradient(135deg,var(--b500),var(--b450));
-  color:#fff;
-  box-shadow:0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.1);
-}
-.qtab:hover:not(.active){color:var(--t2);background:rgba(255,255,255,0.06)}
+/* Production table styling */
+.tw-prod{background:rgba(180,83,9,0.06);border:1px solid rgba(217,119,6,0.25);border-radius:11px;overflow:hidden;margin-bottom:18px;overflow-x:auto;}
+.tw-prod thead th{background:rgba(180,83,9,0.18);color:#d97706;border-bottom:1px solid rgba(217,119,6,0.25);}
+.tw-prod tbody tr{border-bottom:1px solid rgba(217,119,6,0.12);}
+.tw-prod tbody tr:hover{background:rgba(180,83,9,0.08);}
+.tw-prod tbody td{color:var(--text);}
+.tw-prod .tr td{background:rgba(180,83,9,0.15);color:#fbbf24;border-top:1px solid rgba(217,119,6,0.3);}
 
+.bdg{display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.68rem;font-weight:700;}
+.hi{background:rgba(16,185,129,0.15);color:#10b981;}.md{background:rgba(245,158,11,0.15);color:#f59e0b;}.lo{background:rgba(239,68,68,0.15);color:#ef4444;}
 
-/* ── BANNER ──────────────────────────────────────────────────── */
-.banner{
-  border-radius:var(--r);padding:10px 18px;margin-bottom:16px;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
-  font-size:13px;font-weight:500;
-  background:rgba(245,166,35,0.08);
-  border:1px solid rgba(245,166,35,0.25);
-  color:var(--amber);
-}
-.banner strong{font-weight:700;color:#FFD580}
-.pills{display:flex;gap:6px;flex-wrap:wrap}
-.pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.04em}
-.pill.g{background:var(--green-dim);color:var(--green);border:1px solid var(--green-b)}
-.pill.cy{background:var(--cyan-dim);color:var(--cyan);border:1px solid var(--cyan-b)}
-.pill.a{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-b)}
-.pill.r{background:var(--red-dim);color:var(--red);border:1px solid var(--red-b)}
+/* CHART CONTAINERS */
+.cr{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+@media(max-width:720px){.cr{grid-template-columns:1fr;}}
+.cc{background:var(--s1);border:1px solid var(--border);border-radius:11px;padding:18px;}
+.cc-prod{background:rgba(180,83,9,0.06);border:1px solid rgba(217,119,6,0.25);border-radius:11px;padding:18px;}
+.ct{font-size:0.6rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px;}
+.ct-prod{font-size:0.6rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#d97706;margin-bottom:14px;}
+.ch{position:relative;}
 
-/* ── ANNUAL SNAPSHOT ─────────────────────────────────────────── */
-.snap{
-  background:var(--glass);
-  border:1px solid var(--border);
-  border-radius:var(--rlg);
-  padding:16px 20px;margin-bottom:16px;
-  backdrop-filter:blur(20px);
-  box-shadow:var(--sh-card);
-}
-.snap-hdr{
-  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;
-  color:var(--t3);margin-bottom:14px;
-}
-.snap-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border)}
-.si{background:var(--b900);padding:10px 14px}
-.si:first-child{border-radius:8px 0 0 8px}
-.si:last-child{border-radius:0 8px 8px 0}
-.si-l{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:var(--t3);margin-bottom:5px}
-.si-v{font-size:18px;font-weight:700;color:var(--b200);font-family:inherit;letter-spacing:-0.01em}
-.si-s{font-size:10px;color:var(--t4);margin-top:2px}
+/* SVG CHARTS */
+.bar-svg{width:100%;overflow:visible;}
+.grid-line{stroke:rgba(255,255,255,0.04);stroke-width:1;}
+.axis-label{font-size:10px;fill:#475569;font-family:Segoe UI,sans-serif;}
+.bar-val{font-size:10px;fill:#94a3b8;font-family:Segoe UI,sans-serif;}
+.bar-label{font-size:11px;fill:#64748b;font-family:Segoe UI,sans-serif;}
+.line-path{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
 
-/* ── TRIGGER GRID ────────────────────────────────────────────── */
-.tgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+/* DOUGHNUT */
+.donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+.donut-legend{display:flex;flex-direction:column;gap:7px;}
+.dl-item{display:flex;align-items:center;gap:7px;font-size:0.72rem;color:var(--muted);}
+.dl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.dl-val{margin-left:auto;font-weight:600;color:var(--text);padding-left:12px;}
 
-.tc{
-  background:linear-gradient(160deg,rgba(13,28,56,0.95),rgba(9,20,42,0.98));
-  border:1px solid var(--border);
-  border-radius:var(--rlg);
-  overflow:hidden;
-  transition:box-shadow 0.2s,transform 0.15s,border-color 0.2s;
-  position:relative;
-}
-.tc::before{
-  content:'';position:absolute;inset:0;border-radius:var(--rlg);
-  background:linear-gradient(160deg,rgba(94,151,226,0.04) 0%,transparent 60%);
-  pointer-events:none;
-}
-.tc:hover{
-  box-shadow:var(--sh-hover);
-  transform:translateY(-2px);
-  border-color:var(--border3);
-}
-.tc.wide{grid-column:span 2}
+/* TREND CARD */
+.trc{background:var(--s1);border:1px solid var(--border);border-radius:11px;padding:18px;margin-bottom:18px;}
+.trc-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px;}
+.trend-btns{display:flex;gap:5px;flex-wrap:wrap;}
+.tb{font-size:0.62rem;padding:4px 10px;border-radius:5px;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all 0.15s;font-family:inherit;}
+.tb:hover{border-color:var(--border2);color:var(--text);}.tb.on{background:var(--s3);border-color:var(--border2);color:var(--text);}
+.leg{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;}
+.li{display:flex;align-items:center;gap:5px;font-size:0.69rem;color:var(--muted);}
+.ld{width:20px;height:3px;border-radius:2px;}
 
-/* accent line at top */
-.tc-top{height:2px;width:100%}
-.tc-top.g{background:linear-gradient(90deg,#0FC87A,#22D3EE)}
-.tc-top.cy{background:linear-gradient(90deg,#22D3EE,#818CF8)}
-.tc-top.a{background:linear-gradient(90deg,#F5A623,#FDD835)}
-.tc-top.r{background:linear-gradient(90deg,#F55252,#FF8A65)}
-.tc-top.p{background:linear-gradient(90deg,var(--b450),var(--b350))}
+/* COREY */
+.corey-card{background:var(--s1);border:1px solid var(--border);border-radius:11px;padding:22px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;margin-bottom:18px;}
 
-.tc-body{padding:16px 18px 14px}
-.tc-dept{
-  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;
-  color:var(--t4);margin-bottom:4px;
-}
-.tc-name{
-  font-size:13px;font-weight:600;color:var(--t2);
-  margin-bottom:10px;
-  display:flex;align-items:center;justify-content:space-between;gap:6px;
-}
-
-
-.tc-val{
-  font-size:34px;font-weight:700;line-height:1;margin-bottom:4px;
-  font-family:inherit;letter-spacing:-0.02em;
-}
-.tc-val.g{color:var(--green)}
-.tc-val.cy{color:var(--cyan)}
-.tc-val.a{color:var(--amber)}
-.tc-val.r{color:var(--red)}
-.tc-val.p{color:var(--t3)}
-
-.tc-goal{font-size:11px;color:var(--t4);margin-bottom:10px;line-height:1.4}
-
-.tc-badge{
-  display:inline-flex;align-items:center;gap:4px;
-  font-size:10px;font-weight:700;padding:3px 10px;
-  border-radius:6px;letter-spacing:0.03em;margin-bottom:12px;
-}
-.tc-badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
-.tc-badge.g{background:var(--green-dim);color:var(--green);border:1px solid var(--green-b)}
-.tc-badge.g::before{background:var(--green)}
-.tc-badge.cy{background:var(--cyan-dim);color:var(--cyan);border:1px solid var(--cyan-b)}
-.tc-badge.cy::before{background:var(--cyan)}
-.tc-badge.a{background:var(--amber-dim);color:var(--amber);border:1px solid var(--amber-b)}
-.tc-badge.a::before{background:var(--amber)}
-.tc-badge.r{background:var(--red-dim);color:var(--red);border:1px solid var(--red-b)}
-.tc-badge.r::before{background:var(--red)}
-.tc-badge.p{background:rgba(74,106,154,0.15);color:var(--t3);border:1px solid var(--t4)}
-.tc-badge.p::before{background:var(--t3)}
-
-
-
-/* Progress */
-.prog{margin-top:4px}
-
-.prog-track{
-  height:5px;background:rgba(255,255,255,0.05);
-  border-radius:3px;position:relative;overflow:visible;
-  border:1px solid rgba(74,132,216,0.12);
-}
-.prog-fill{height:100%;border-radius:3px;transition:width 0.7s cubic-bezier(.34,1.56,.64,1)}
-.prog-fill.g{background:linear-gradient(90deg,#0FC87A,#22D3EE)}
-.prog-fill.cy{background:linear-gradient(90deg,#22D3EE,#818CF8)}
-.prog-fill.a{background:linear-gradient(90deg,#F5A623,#FDD835)}
-.prog-fill.r{background:linear-gradient(90deg,#F55252,#FF8A65)}
-.prog-fill.p{background:linear-gradient(90deg,var(--b500),var(--b400))}
-.prog-marker{
-  position:absolute;top:-5px;width:2px;height:15px;
-  border-radius:1px;background:rgba(255,255,255,0.4);
-}
-
-/* ── INCENTIVE ───────────────────────────────────────────────── */
-.incent{
-  background:linear-gradient(135deg,var(--b800) 0%,var(--b750) 50%,var(--b700) 100%);
-  border:1px solid var(--border2);
-  border-radius:var(--rlg);padding:18px 22px;margin-bottom:16px;
-  box-shadow:var(--sh);
-  position:relative;overflow:hidden;
-}
-.incent-hdr{
-  font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;
-  color:var(--t4);margin-bottom:14px;
-}
-.incent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.it{
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.08);
-  border-radius:var(--r);padding:14px 16px;
-  transition:background 0.15s,border-color 0.15s;
-  position:relative;overflow:hidden;
-}
-.it::before{content:'';position:absolute;top:0;left:0;right:0;height:1px}
-.it:nth-child(1)::before{background:linear-gradient(90deg,transparent,var(--amber),transparent)}
-.it:nth-child(2)::before{background:linear-gradient(90deg,transparent,var(--b350),transparent)}
-.it:nth-child(3)::before{background:linear-gradient(90deg,transparent,var(--green),transparent)}
-.it:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.14)}
-.it-badge{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px;padding:3px 8px;border-radius:4px;display:inline-block}
-.it-badge.t1{background:rgba(245,166,35,0.15);color:var(--amber)}
-.it-badge.t2{background:rgba(46,99,188,0.2);color:var(--b250)}
-.it-badge.t3{background:var(--green-dim);color:var(--green)}
-.it-pay{font-size:26px;font-weight:800;color:var(--t1);font-family:inherit;margin-bottom:3px;letter-spacing:-0.02em}
-.it-desc{font-size:12px;color:var(--t2)}
-.it-note{font-size:10px;color:var(--t4);margin-top:5px}
-
-/* ── TREND ───────────────────────────────────────────────────── */
-.trend-card{
-  background:linear-gradient(160deg,rgba(13,28,56,0.95),rgba(9,20,42,0.98));
-  border:1px solid var(--border);
-  border-radius:var(--rlg);padding:20px 22px;
-  box-shadow:var(--sh-card);
-}
-.trend-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
-.trend-hdr h2{font-size:14px;font-weight:700;color:var(--t1)}
-.legend{display:flex;gap:14px;flex-wrap:wrap}
-.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t3);font-weight:500}
-.leg-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-.trend-wrap{position:relative;height:210px}
-
-
-
-/* Scrollbar */
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:var(--b900)}
-::-webkit-scrollbar-thumb{background:var(--b600);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--b500)}
-
-/* Responsive */
-@media(max-width:920px){
-  .tgrid{grid-template-columns:repeat(2,1fr)}
-  .tc.wide{grid-column:span 2}
-  .snap-grid{grid-template-columns:repeat(3,1fr)}
-  .d-layout{grid-template-columns:1fr}
-}
-@media(max-width:560px){
-  .tgrid{grid-template-columns:1fr}
-  .tc.wide{grid-column:span 1}
-  .incent-grid{grid-template-columns:1fr}
-  .snap-grid{grid-template-columns:repeat(2,1fr)}
-  .di{grid-template-columns:100px 1fr 44px 40px}
-}
-
-/* ── Monthly breakdown panel ─────────────────────── */
-.mo-toggle{display:flex;align-items:center;gap:8px;margin:0 0 12px;cursor:pointer;width:fit-content}
-.mo-toggle-btn{background:rgba(74,132,216,0.15);border:1px solid rgba(74,132,216,0.35);color:var(--b200);font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;cursor:pointer;transition:background .15s,border-color .15s;font-family:inherit;letter-spacing:.03em}
-.mo-toggle-btn:hover{background:rgba(74,132,216,0.28);border-color:var(--b400)}
-.mo-toggle-btn.active{background:rgba(74,132,216,0.30);border-color:var(--b300)}
-.mo-panel{background:rgba(10,22,50,0.6);border:1px solid rgba(74,132,216,0.18);border-radius:12px;padding:16px 20px;margin-bottom:20px;overflow-x:auto}
-.mo-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}
-.mo-table th{text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--b300);padding:6px 14px 8px;border-bottom:1px solid rgba(74,132,216,0.2)}
-.mo-table th:first-child{color:var(--t2)}
-.mo-table td{padding:8px 14px;border-bottom:1px solid rgba(74,132,216,0.08);color:var(--t1);font-variant-numeric:tabular-nums}
-.mo-table tr:last-child td{border-bottom:none}
-.mo-table td:first-child{font-weight:600;color:var(--b200)}
-.mo-val{font-weight:500}
-.mo-val.g{color:#0FC87A}.mo-val.cy{color:#22D3EE}.mo-val.a{color:#F5A623}.mo-val.r{color:#F55252}
+/* Pipeline */
+--pipe:#0f766e;
+.tw-pipe{background:rgba(15,118,110,0.06);border:1px solid rgba(15,118,110,0.25);border-radius:11px;overflow:hidden;margin-bottom:18px;overflow-x:auto;}
+.tw-pipe thead th{background:rgba(15,118,110,0.18);color:#14b8a6;border-bottom:1px solid rgba(15,118,110,0.25);padding:10px 13px;font-size:0.59rem;font-weight:600;letter-spacing:0.09em;text-transform:uppercase;text-align:left;white-space:nowrap;}
+.tw-pipe tbody tr{border-bottom:1px solid rgba(15,118,110,0.1);transition:background 0.12s;}
+.tw-pipe tbody tr:last-child{border-bottom:none;}
+.tw-pipe tbody tr:hover{background:rgba(15,118,110,0.07);}
+.tw-pipe tbody td{padding:10px 13px;font-size:0.76rem;color:var(--text);white-space:nowrap;}
+.stage-bdg{display:inline-block;padding:2px 9px;border-radius:20px;font-size:0.65rem;font-weight:700;white-space:nowrap;}
+.stage-lead{background:rgba(100,116,139,0.15);color:#94a3b8;}
+.stage-contact{background:rgba(59,130,246,0.15);color:#60a5fa;}
+.stage-proposal{background:rgba(245,158,11,0.15);color:#fbbf24;}
+.stage-negotiation{background:rgba(249,115,22,0.15);color:#fb923c;}
+.stage-won{background:rgba(16,185,129,0.15);color:#34d399;}
+.pipe-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px;margin-bottom:18px;}
+.corey-info h3{font-size:1rem;font-weight:700;margin-bottom:5px;}
+.corey-info p{font-size:0.8rem;color:var(--muted);line-height:1.75;}
+.corey-info strong{color:var(--orange);font-weight:700;}
+.nav-wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.month-select-wrap{display:flex;align-items:center;gap:8px;}
+.month-label{font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+.month-sel{font-size:0.78rem;padding:7px 32px 7px 13px;border-radius:7px;border:1px solid var(--border);background:var(--s2);color:var(--text);cursor:pointer;font-family:inherit;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;transition:border-color 0.18s;}
+.month-sel:hover{border-color:var(--border2);}
+.month-sel:focus{outline:none;border-color:var(--blue);}
+.month-sel option{background:var(--s2);color:var(--text);}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<!-- ── PASSWORD GATE ── -->
-<div id="gate" style="
-  position:fixed;inset:0;z-index:9999;
-  background:#060F1E;
-  display:flex;align-items:center;justify-content:center;
-  background-image:radial-gradient(circle at 1px 1px,rgba(74,132,216,0.1) 1px,transparent 0);
-  background-size:28px 28px;
-">
-  <div style="
-    width:380px;max-width:92vw;
-    background:linear-gradient(160deg,#0D2448,#071428);
-    border:1px solid rgba(74,132,216,0.35);
-    border-radius:18px;
-    padding:40px 36px;
-    box-shadow:0 0 0 1px rgba(74,132,216,0.12),0 24px 60px rgba(0,0,0,0.6);
-    text-align:center;
-  ">
-    <div style="
-      width:52px;height:52px;margin:0 auto 20px;
-      background:linear-gradient(135deg,#2E63BC,#4A84D8);
-      border:1px solid rgba(74,132,216,0.5);
-      border-radius:13px;
-      display:flex;align-items:center;justify-content:center;
-      font-size:15px;font-weight:800;color:#fff;
-      box-shadow:0 2px 8px rgba(0,0,0,0.4);
-    ">PBS</div>
-    <div style="font-size:18px;font-weight:700;color:#E8F2FF;margin-bottom:6px;letter-spacing:-0.02em;">
-      Financial Scorecard
-    </div>
-    <div style="font-size:12px;color:#4A6A9A;margin-bottom:28px;letter-spacing:0.03em;text-transform:uppercase;">
-      2026 · Confidential
-    </div>
-    <input id="pwInput" type="password" placeholder="Enter password"
-      onkeydown="if(event.key==='Enter')checkPw()"
-      style="
-        width:100%;padding:12px 14px;
-        background:rgba(0,0,0,0.35);
-        border:1px solid rgba(74,132,216,0.3);
-        border-radius:10px;
-        color:#E8F2FF;font-size:14px;
-        outline:none;margin-bottom:12px;
-        font-family:inherit;
-        transition:border-color 0.2s;
-      "
-      onfocus="this.style.borderColor='rgba(74,132,216,0.7)'"
-      onblur="this.style.borderColor='rgba(74,132,216,0.3)'"
-    >
-    <div id="pwErr" style="
-      font-size:12px;color:#F55252;
-      margin-bottom:10px;min-height:18px;
-      transition:opacity 0.2s;
-    "></div>
-    <button onclick="checkPw()" style="
-      width:100%;padding:12px;
-      background:linear-gradient(135deg,#2E63BC,#3872CC);
-      border:none;border-radius:10px;
-      color:#fff;font-size:14px;font-weight:700;
-      cursor:pointer;font-family:inherit;
-      transition:opacity 0.15s;
-    "
-    onmouseover="this.style.opacity='0.88'"
-    onmouseout="this.style.opacity='1'"
-    >Access Dashboard</button>
+<header>
+  <div class="logo"><h1>Technician Scorecard</h1><p>Weekly Performance Dashboard · 2026</p></div>
+  <div class="nav-wrap">
+  <div class="month-select-wrap">
+    <label class="month-label">Month</label>
+    <select class="month-sel" id="monthSel" onchange="onMonthChange(this.value)"></select>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</div>
+</header>
+
+<!-- SERVICE -->
+<div class="sh"><div class="pip" style="background:var(--svc)"></div><h2>Service Team</h2><div class="rl"></div></div>
+<div class="kpis" id="sKpis"></div>
+<div class="tw"><table><thead id="sTh"></thead><tbody id="sTb"></tbody></table></div>
+<div class="cr">
+  <div class="cc"><div class="ct">First Call Effectiveness</div><div class="ch" id="cFceSvc"></div></div>
+  <div class="cc"><div class="ct">Parts Cost per Call ($)</div><div class="ch" id="cParts"></div></div>
+</div>
+<div class="trc">
+  <div class="trc-head"><div class="ct" style="margin:0">Service Team — Weekly Trend</div><div class="trend-btns" id="sTrBtns"></div></div>
+  <div class="ch" id="cSTrend"></div><div class="leg" id="sLeg"></div>
+</div>
+
+<!-- PRODUCTION -->
+<div class="sh"><div class="pip" style="background:var(--prod)"></div><h2>Production Machine Metrics</h2><div class="rl"></div></div>
+<div class="kpis" id="pKpis"></div>
+<div class="tw-prod"><table><thead id="pTh"></thead><tbody id="pTb"></tbody></table></div>
+<div class="cr">
+  <div class="cc-prod"><div class="ct-prod">Prod. Parts Cost per Call ($)</div><div class="ch" id="cProdPpc"></div></div>
+  <div class="cc-prod"><div class="ct-prod">Prod. Total Cost per Call ($)</div><div class="ch" id="cProdTcc"></div></div>
+</div>
+<div class="trc" style="background:rgba(180,83,9,0.06);border-color:rgba(217,119,6,0.25)">
+  <div class="trc-head"><div class="ct-prod" style="margin:0">Production — Weekly Trend</div><div class="trend-btns" id="pTrBtns"></div></div>
+  <div class="ch" id="cPTrend"></div><div class="leg" id="pLeg"></div>
+</div>
+
+<!-- TSS -->
+<div class="sh"><div class="pip" style="background:var(--tss)"></div><h2>TSS Team</h2><div class="rl"></div></div>
+<div class="kpis" id="tKpis"></div>
+<div class="tw"><table><thead id="tTh"></thead><tbody id="tTb"></tbody></table></div>
+<div class="cr">
+  <div class="cc"><div class="ct">First Call Effectiveness</div><div class="ch" id="cFceTss"></div></div>
+  <div class="cc"><div class="ct">Time Allocation — Team</div><div class="ch" id="cDonut"></div></div>
+</div>
+<div class="trc">
+  <div class="trc-head"><div class="ct" style="margin:0">TSS Team — Weekly Trend</div><div class="trend-btns" id="tTrBtns"></div></div>
+  <div class="ch" id="cTTrend"></div><div class="leg" id="tLeg"></div>
+</div>
+
+<!-- COREY -->
+<div class="sh"><div class="pip" style="background:var(--corey)"></div><h2>Corey Meyer — Coverage</h2><div class="rl"></div></div>
+<div class="corey-card">
+  <div id="cCoreyDonut"></div>
+  <div class="corey-info">
+    <h3>Corey Meyer</h3>
+    <p><strong id="cCalls">—</strong> Contract Visit + Supply Delivery calls this week<br>out of <strong id="cTotal">—</strong> total CV + SD calls across all technicians</p>
   </div>
 </div>
 
-<div class="page">
 
-<!-- HEADER -->
-<div class="hdr">
-  <div class="hdr-brand">
-    <div class="hdr-logo">PBS</div>
-    <div class="hdr-t">
-      <h1>2026 Financial Scorecard</h1>
-      <p>All 7 triggers must be met &nbsp;·&nbsp; Year-end actuals determine tier</p>
-    </div>
-  </div>
-  <div class="hdr-r">
-    <div class="qtabs" id="qTabs"></div>
-
-  </div>
+<!-- PIPELINE -->
+<div class="sh"><div class="pip" style="background:#0f766e"></div><h2>Production Pipeline</h2><div class="rl"></div></div>
+<div class="pipe-kpis" id="pipeKpis"></div>
+<div class="tw-pipe">
+  <table style="width:100%;border-collapse:collapse;min-width:700px;">
+    <thead id="pipeTh"></thead>
+    <tbody id="pipeTb"></tbody>
+  </table>
 </div>
 
-<!-- BANNER -->
-<div class="banner" id="banner"></div>
-
-<!-- ANNUAL SNAPSHOT -->
-<div class="snap">
-  <div class="snap-hdr">2026 Annual Goals — Target Tier</div>
-  <div class="snap-grid">
-    <div class="si"><div class="si-l">Total Revenue</div><div class="si-v">$9.67M</div><div class="si-s">Annual target</div></div>
-    <div class="si"><div class="si-l">Print Revenue</div><div class="si-v">$8.703M</div><div class="si-s">Annual</div></div>
-    <div class="si"><div class="si-l">MSP Revenue</div><div class="si-v">$967K</div><div class="si-s">Annual</div></div>
-    <div class="si"><div class="si-l">Print MRR</div><div class="si-v">$650.3K</div><div class="si-s">Monthly target</div></div>
-    <div class="si"><div class="si-l">MSP MRR</div><div class="si-v">$72.3K</div><div class="si-s">Monthly target</div></div>
-  </div>
 </div>
-
-<!-- TRIGGER GRID -->
-<div id="moWrap" style="margin-bottom:4px"></div>
-  <div class="tgrid" id="tgrid"></div>
-
-<!-- INCENTIVE TIERS -->
-<div class="incent">
-  <div class="incent-hdr">2026 Incentive Tiers — When PBS wins, we all share in the success</div>
-  <div class="incent-grid">
-    <div class="it"><div class="it-badge t1">Threshold</div><div class="it-pay">3%</div><div class="it-desc">of base wage bonus</div><div class="it-note">All 7 triggers at threshold level</div></div>
-    <div class="it"><div class="it-badge t2">Target</div><div class="it-pay">5%</div><div class="it-desc">+ Profit Pail eligible</div><div class="it-note">All 7 triggers at target level</div></div>
-    <div class="it"><div class="it-badge t3">Stretch</div><div class="it-pay">5%</div><div class="it-desc">+ Enhanced Profit Pail</div><div class="it-note">All 7 triggers at stretch level</div></div>
-  </div>
-</div>
-
-<!-- TREND -->
-<div class="trend-card">
-  <div class="trend-hdr">
-    <h2>Quarterly Trend</h2>
-    <div class="legend">
-      <div class="leg"><div class="leg-dot" style="background:#4A84D8"></div>Revenue</div>
-      <div class="leg"><div class="leg-dot" style="background:rgba(74,132,216,0.35);border:1px dashed #4A84D8"></div>Monthly pace</div>
-      <div class="leg"><div class="leg-dot" style="background:#0FC87A"></div>Gross Margin %</div>
-      <div class="leg"><div class="leg-dot" style="background:#F55252"></div>OPEX %</div>
-    </div>
-  </div>
-  <div class="trend-wrap" id="trendWrap"></div>
-</div>
-
-</div><!-- /page -->
-
-
-
 <script>
-// ══════════════════════════════════════════════════════════════════
-//  🔒 PASSWORD — change this to whatever you want
-// ══════════════════════════════════════════════════════════════════
-const DASHBOARD_PASSWORD = 'PBS2026';
+// ═══════════════════════════════════════════
+// DATA — prod = {ppc, pppc, tcc} per tech per week ($0 if no production calls)
+// ═══════════════════════════════════════════
+const WEEKS=[
+  {week:"2/9 \u2013 2/15",
+   service:{"Chad Mahand":{cm:15,pct_cm:0.4733,fce:0.8667,resp:2.3733,ppc:99.89,pppc:266.38,tcc:105.41},"Jimmy Puck":{cm:11,pct_cm:0.3307,fce:0.6364,resp:1.5345,ppc:38.37,pppc:230.23,tcc:54.00},"Jim Stacy":{cm:15,pct_cm:0.5325,fce:0.8667,resp:3.0053,ppc:56.20,pppc:136.50,tcc:73.58},"Scott Reinert":{cm:14,pct_cm:0.3458,fce:0.8571,resp:1.595,ppc:50.45,pppc:189.18,tcc:56.79},"Vynce Stewart":{cm:23,pct_cm:0.417,fce:0.7826,resp:1.1978,ppc:59.96,pppc:229.84,tcc:64.95}},
+   sTeam:{cm:78,pct_cm:0.4166,fce:0.8077,resp:1.8903,ppc:62.05,pppc:206.00,tcc:71.46},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:4,ppc:0,pppc:0,tcc:0},
+   tss:{"Alex Livingston":{cm:7,fce:1.000,resp:0.23,pct_cm:0.198,pct_ua:0.258,remote:0,pct_sh:0.3712,pct_o:0.2077},"Tanner Cowan":{cm:25,fce:0.920,resp:0.29,pct_cm:0.262,pct_ua:0.056,remote:0,pct_sh:0.2758,pct_o:0.4063},"Rhyan O'Shane":{cm:7,fce:1.000,resp:0.54,pct_cm:0.136,pct_ua:0.007,remote:0,pct_sh:0.38,pct_o:0.4769}},
+   tTeam:{cm:39,fce:0.949,resp:0.33,pct_cm:0.204,pct_ua:0.100,pct_dca:0.034,remote:0,pct_sh:0.3372,pct_o:0.3655},
+   corey:{calls:48,total:182}},
 
-function checkPw(){
-  const input = document.getElementById('pwInput').value;
-  if(input === DASHBOARD_PASSWORD){
-    document.getElementById('gate').style.display='none';
-    renderAll();
-  } else {
-    const err = document.getElementById('pwErr');
-    err.textContent = 'Incorrect password. Please try again.';
-    document.getElementById('pwInput').value='';
-    document.getElementById('pwInput').focus();
-    setTimeout(()=>err.textContent='', 3000);
-  }
-}
-// ══════════════════════════════════════════════════════════════════
+  {week:"2/16 \u2013 2/22",
+   service:{"Chad Mahand":{cm:21,pct_cm:0.732,fce:0.762,resp:1.96,ppc:47.97,pppc:150.75,tcc:56.18},"Jimmy Puck":{cm:9,pct_cm:0.298,fce:0.889,resp:1.88,ppc:163.51,pppc:299.77,tcc:177.77},"Jim Stacy":{cm:9,pct_cm:0.414,fce:0.778,resp:2.27,ppc:90.53,pppc:203.68,tcc:111.45},"Scott Reinert":{cm:17,pct_cm:0.443,fce:0.941,resp:1.43,ppc:36.77,pppc:125.00,tcc:48.54},"Vynce Stewart":{cm:14,pct_cm:0.454,fce:0.786,resp:1.09,ppc:25.99,pppc:72.76,tcc:35.89}},
+   sTeam:{cm:70,pct_cm:0.469,fce:0.829,resp:1.69,ppc:63.80,pppc:172.50,tcc:75.64},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:2,ppc:0,pppc:0,tcc:0},
+   tss:{"Alex Livingston":{cm:19,fce:0.895,resp:1.53,pct_cm:0.336,pct_ua:0.158,remote:0.895,pct_sh:0.3571,pct_o:0.1491},"Tanner Cowan":{cm:7,fce:1.000,resp:1.80,pct_cm:0.233,pct_ua:0.098,remote:0.714,pct_sh:0.3193,pct_o:0.3503},"Rhyan O'Shane":{cm:10,fce:0.800,resp:0.36,pct_cm:0.095,pct_ua:0.109,remote:0.800,pct_sh:0.439,pct_o:0.3567}},
+   tTeam:{cm:36,fce:0.889,resp:1.26,pct_cm:0.210,pct_ua:0.121,pct_dca:0.124,remote:0.833,pct_sh:0.3789,pct_o:0.2894},
+   corey:{calls:70,total:141}},
 
-// ══ TRIGGER DEFINITIONS ═══════════════════════════════════════════
-const T=[
-  {id:'rev',name:'Revenue',dept:'Sales',dir:'up',fmt:'$',wide:true,
-   thresh:9000000,target:9670000,stretch:9670000,
-   drill:{title:'Revenue Breakdown',sub:'By business line vs. annual targets',
-     items:[
-       {lbl:'Print Revenue',    a:7950000,t:8703000,c:'#4A84D8',note:'Core business — tracking vs. annual goal'},
-       {lbl:'MSP Revenue',      a:455000, t:967000, c:'#0FC87A',note:'Ramp-up phase — new business development'},
-       {lbl:'Services / Other', a:295000, t:0,      c:'#8DBEF3',note:'Non-recurring project revenue'},
-     ],curr:true,note:'Prototype data — replace with actual P&L revenue by business line.'}},
-  {id:'cogs',name:'COGS %',dept:'Operations',dir:'down',fmt:'%',
-   thresh:30,target:30,stretch:29,
-   drill:{title:'COGS Breakdown',sub:'Cost components as % of revenue',
-     items:[
-       {lbl:'Paper & Supplies',    a:10.2,t:9.5, c:'#4A84D8',note:'Primary consumable — slightly over'},
-       {lbl:'Equipment Leases',    a:7.8, t:8.0, c:'#0FC87A',note:'Favorable — under budget'},
-       {lbl:'Tech / MSP Delivery', a:5.4, t:5.0, c:'#F5A623',note:'MSP growth increasing this line'},
-       {lbl:'3rd Party Services',  a:3.8, t:4.5, c:'#A78BFA',note:'Well under target — favorable'},
-       {lbl:'Freight / Shipping',  a:2.2, t:3.0, c:'#8DBEF3',note:'Significantly under target'},
-     ],unit:'%',note:'Prototype breakdown. Update with COGS line items from your P&L.'}},
-  {id:'gm',name:'Gross Margin %',dept:'Sales / Finance',dir:'up',fmt:'%',
-   thresh:70,target:70,stretch:71,
-   drill:{title:'Gross Margin by Segment',sub:'Margin % by revenue stream',
-     items:[
-       {lbl:'Print (core)',     a:72.1,t:71.0,c:'#0FC87A',note:'Strongest margin — above target'},
-       {lbl:'MSP (managed IT)',a:61.5,t:68.0,c:'#F5A623',note:'Below target — improving as it scales'},
-       {lbl:'Services / Other',a:74.2,t:72.0,c:'#4A84D8',note:'High-margin ancillary revenue'},
-     ],unit:'%',note:'Prototype segment margins. Replace with P&L gross profit by segment.'}},
-  {id:'payroll',name:'Payroll %',dept:'Finance',dir:'down',fmt:'%',
-   thresh:35,target:33,stretch:33,
-   drill:{title:'Payroll Breakdown',sub:'Payroll components as % of revenue',
-     items:[
-       {lbl:'Base Wages',        a:22.4,t:22.0,c:'#4A84D8',note:'Largest component — on pace'},
-       {lbl:'Benefits & Health', a:4.8, t:5.0, c:'#0FC87A',note:'Slightly under — favorable'},
-       {lbl:'Payroll Taxes',     a:2.6, t:2.5, c:'#8DBEF3',note:'In line with expectations'},
-       {lbl:'Contract / Temp',   a:1.4, t:3.5, c:'#A78BFA',note:'Low temp usage — favorable'},
-     ],unit:'%',note:'Prototype breakdown. Update with payroll register data.'}},
-  {id:'opex',name:'Total OPEX %',dept:'Operations',dir:'down',fmt:'%',
-   thresh:50,target:48,stretch:47,
-   drill:{title:'OPEX Breakdown',sub:'All operating expense components as % of revenue',
-     items:[
-       {lbl:'Payroll (total)',   a:31.2,t:33.0,c:'#4A84D8',note:'Under budget — favorable'},
-       {lbl:'Rent & Facilities', a:7.2, t:7.0, c:'#F5A623',note:'Slightly over — lease renewals'},
-       {lbl:'Marketing & Ads',   a:4.1, t:3.5, c:'#A78BFA',note:'Over budget — campaign spend'},
-       {lbl:'Software & Tools',  a:3.8, t:3.0, c:'#22D3EE',note:'Increased tooling investment'},
-       {lbl:'G&A / Admin',       a:3.4, t:1.5, c:'#F55252',note:'Primary overage driver — needs review'},
-     ],unit:'%',note:'Q1 actuals. G&A and Marketing are primary drivers of 1.7% overage vs. target.'}},
+  {week:"2/23 \u2013 2/27",
+   service:{"Chad Mahand":{cm:19,pct_cm:0.7937,fce:0.8421,resp:1.8432,ppc:44.69,pppc:169.84,tcc:52.25},"Jimmy Puck":{cm:12,pct_cm:0.3412,fce:0.6667,resp:1.6658,ppc:28.71,pppc:143.57,tcc:42.48},"Jim Stacy":{cm:10,pct_cm:0.5436,fce:0.7000,resp:1.5510,ppc:27.26,pppc:74.98,tcc:41.46},"Scott Reinert":{cm:10,pct_cm:0.4956,fce:1.0000,resp:1.8570,ppc:5.63,pppc:20.66,tcc:36.75},"Vynce Stewart":{cm:15,pct_cm:0.6624,fce:0.8000,resp:1.2193,ppc:20.15,pppc:100.76,tcc:24.49}},
+   sTeam:{cm:66,pct_cm:0.5536,fce:0.8030,resp:1.627,ppc:27.38,pppc:108.01,tcc:40.25},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:0,ppc:0,pppc:0,tcc:0},
+   tss:{"Alex Livingston":{cm:15,fce:0.8667,resp:0.7087,pct_cm:0.2686,pct_ua:0.0790,remote:0.8333,pct_sh:0.3896,pct_o:0.3417},"Tanner Cowan":{cm:27,fce:1.0000,resp:0.6993,pct_cm:0.6013,pct_ua:0.1971,remote:0.7368,pct_sh:0.1274,pct_o:0.2713},"Rhyan O'Shane":{cm:15,fce:0.8667,resp:0.8993,pct_cm:0.2148,pct_ua:0.1219,remote:0.7778,pct_sh:0.2497,pct_o:0.5355}},
+   tTeam:{cm:57,fce:0.9298,resp:0.7544,pct_cm:0.3619,pct_ua:0.1338,pct_dca:0.1225,remote:0,pct_sh:0.2425,pct_o:0.4832},
+   corey:{calls:93,total:167}},
+
+  {week:"3/2 \u2013 3/6",
+   service:{"Chad Mahand":{cm:20,pct_cm:0.7203,fce:0.9000,resp:1.428,ppc:44.75,pppc:178.99,tcc:49.58},"Jimmy Puck":{cm:14,pct_cm:0.5511,fce:0.7143,resp:1.5436,ppc:23.21,pppc:371.32,tcc:28.98},"Jim Stacy":{cm:10,pct_cm:0.3701,fce:0.7000,resp:1.995,ppc:97.16,pppc:152.67,tcc:105.68},"Scott Reinert":{cm:5,pct_cm:0.1529,fce:0.8000,resp:2.114,ppc:32.10,pppc:160.50,tcc:44.98},"Vynce Stewart":{cm:14,pct_cm:0.4129,fce:0.7857,resp:1.0629,ppc:7.44,pppc:52.05,tcc:16.64}},
+   sTeam:{cm:63,pct_cm:0.4422,fce:0.7937,resp:1.517,ppc:39.39,pppc:162.48,tcc:46.60},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:1539.16,pppc:2308.74,tcc:1547.32},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:2,ppc:1539.16,pppc:2308.74,tcc:1547.32},
+   tss:{"Alex Livingston":{cm:28,fce:0.9286,resp:1.3075,pct_cm:0.6207,pct_ua:0.1815,remote:0.9474,pct_sh:0.0727,pct_o:0.1795},"Tanner Cowan":{cm:8,fce:1.0000,resp:0.4488,pct_cm:0.0773,pct_ua:0.0292,remote:0.7500,pct_sh:0.2398,pct_o:0.6637},"Rhyan O'Shane":{cm:20,fce:1.0000,resp:1.028,pct_cm:0.2768,pct_ua:0.0877,remote:0.7500,pct_sh:0.3212,pct_o:0.4257}},
+   tTeam:{cm:56,fce:0.9643,resp:1.085,pct_cm:0.2664,pct_ua:0.0832,pct_dca:0.0097,remote:0.8571,pct_sh:0.3429,pct_o:0.3099},
+   corey:{calls:91,total:163}},
+
+  {week:"3/9 \u2013 3/13",
+   service:{"Chad Mahand":{cm:14,pct_cm:0.5337,fce:0.8571,resp:2.615,ppc:31.11,pppc:145.20,tcc:41.11},"Jimmy Puck":{cm:16,pct_cm:0.7125,fce:0.7500,resp:1.5737,ppc:16.14,pppc:258.17,tcc:23.70},"Jim Stacy":{cm:12,pct_cm:0.5770,fce:0.9167,resp:1.780,ppc:36.31,pppc:94.42,tcc:46.44},"Scott Reinert":{cm:7,pct_cm:0.3168,fce:0.8571,resp:1.7457,ppc:158.79,pppc:555.77,tcc:175.59},"Vynce Stewart":{cm:14,pct_cm:0.5053,fce:0.7857,resp:1.245,ppc:37.93,pppc:176.98,tcc:48.77}},
+   sTeam:{cm:63,pct_cm:0.5257,fce:0.8254,resp:1.7905,ppc:43.88,pppc:200.60,tcc:54.23},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:18.20},"Jimmy Puck":{ppc:58.71,pppc:234.84,tcc:68.34},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:7,ppc:29.36,pppc:234.84,tcc:43.27},
+   tss:{"Alex Livingston":{cm:12,fce:0.9167,resp:0.2233,pct_cm:0.2156,pct_ua:0.0753,remote:0.8750,pct_sh:0.5599,pct_o:0.1734},"Tanner Cowan":{cm:23,fce:0.9130,resp:0.3678,pct_cm:0.4645,pct_ua:0.2252,remote:0.7500,pct_sh:0.2877,pct_o:0.1953},"Rhyan O'Shane":{cm:26,fce:0.9615,resp:0.3054,pct_cm:0.2053,pct_ua:0.1067,remote:1.0000,pct_sh:0.2954,pct_o:0.5185}},
+   tTeam:{cm:61,fce:0.9344,resp:0.3128,pct_cm:0.3106,pct_ua:0.1462,pct_dca:0.0434,remote:0.8710,pct_sh:0.2543,pct_o:0.4281},
+   corey:{calls:53,total:89}},
+
+  {week:"3/16 \u2013 3/20",
+   service:{"Chad Mahand":{cm:18,pct_cm:0.6418,fce:0.7778,resp:1.9578,ppc:55.30,pppc:165.89,tcc:64.47},"Jimmy Puck":{cm:15,pct_cm:0.5329,fce:0.6667,resp:1.9020,ppc:29.55,pppc:147.75,tcc:46.12},"Jim Stacy":{cm:13,pct_cm:0.5928,fce:0.7692,resp:2.9177,ppc:46.64,pppc:101.05,tcc:74.53},"Scott Reinert":{cm:12,pct_cm:0.4525,fce:0.8333,resp:2.7492,ppc:52.88,pppc:137.50,tcc:70.01},"Vynce Stewart":{cm:0,pct_cm:0,fce:0,resp:0,ppc:0,pppc:0,tcc:0}},
+   sTeam:{cm:58,pct_cm:0.5553,fce:0.7586,resp:2.3222,ppc:46.31,pppc:136.62,tcc:63.24},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:7.00},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:3,ppc:0,pppc:0,tcc:7.00},
+   tss:{"Alex Livingston":{cm:12,fce:1.0000,resp:0.5417,pct_cm:0.3003,pct_ua:0.1009,remote:1.0000,pct_sh:0.2539,pct_o:0.5212},"Tanner Cowan":{cm:31,fce:0.9355,resp:0.4997,pct_cm:0.6037,pct_ua:0.1546,remote:0.8182,pct_sh:0.2128,pct_o:0.2517},"Rhyan O'Shane":{cm:16,fce:1.0000,resp:0.4562,pct_cm:0.1627,pct_ua:0.0815,remote:1.0000,pct_sh:0.2433,pct_o:0.6183}},
+   tTeam:{cm:59,fce:0.9661,resp:0.4964,pct_cm:0.3801,pct_ua:0.1168,pct_dca:0.0334,remote:0.8919,pct_sh:0.2624,pct_o:0.5455},
+   corey:{calls:32,total:104}},
+
+  {week:"3/23 \u2013 3/27",
+   service:{"Chad Mahand":{cm:22,pct_cm:0.7665,fce:0.8182,resp:2.0005,ppc:29.99,pppc:94.24,tcc:35.84},"Jimmy Puck":{cm:9,pct_cm:0.4445,fce:1.0000,resp:1.9144,ppc:78.86,pppc:236.59,tcc:92.71},"Jim Stacy":{cm:0,pct_cm:0,fce:0,resp:0,ppc:0,pppc:0,tcc:0},"Scott Reinert":{cm:8,pct_cm:0.4740,fce:1.0000,resp:2.8537,ppc:92.12,pppc:368.46,tcc:147.50},"Vynce Stewart":{cm:14,pct_cm:0.4039,fce:0.7143,resp:1.7229,ppc:51.00,pppc:255.00,tcc:58.84}},
+   sTeam:{cm:53,pct_cm:0.5132,fce:0.8491,resp:2.0413,ppc:53.17,pppc:191.43,tcc:68.25},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:2,ppc:0,pppc:0,tcc:0},
+   tss:{"Alex Livingston":{cm:15,fce:0.9333,resp:0.3520,pct_cm:0.2646,pct_ua:0.0718,remote:0.7500,pct_sh:0.3141,pct_o:0.378},"Tanner Cowan":{cm:9,fce:0.7778,resp:0.2144,pct_cm:0.1629,pct_ua:0.0286,remote:0.8333,pct_sh:0.2448,pct_o:0.5896},"Rhyan O'Shane":{cm:17,fce:0.9412,resp:0.3965,pct_cm:0.1719,pct_ua:0.0537,remote:1.0000,pct_sh:0.4842,pct_o:0.2459}},
+   tTeam:{cm:41,fce:0.9024,resp:0.3402,pct_cm:0.1937,pct_ua:0.0506,pct_dca:0.0599,remote:0.8696,pct_sh:0.2792,pct_o:0.4036},
+   corey:{calls:60,total:99}},
+
+  {week:"3/30 \u2013 4/3",
+   service:{"Chad Mahand":{cm:21,pct_cm:0.8217,fce:0.7619,resp:1.2524,ppc:43.49,pppc:152.23,tcc:48.96},"Jimmy Puck":{cm:13,pct_cm:0.4719,fce:0.7692,resp:2.1385,ppc:7.28,pppc:101.91,tcc:18.53},"Jim Stacy":{cm:0,pct_cm:0,fce:0,resp:0,ppc:0,pppc:0,tcc:0},"Scott Reinert":{cm:12,pct_cm:0.4856,fce:1.0000,resp:1.8292,ppc:34.67,pppc:208.00,tcc:44.29},"Vynce Stewart":{cm:19,pct_cm:0.7038,fce:0.8421,resp:1.5079,ppc:22.37,pppc:149.11,tcc:31.40}},
+   sTeam:{cm:65,pct_cm:0.6166,fce:0.8308,resp:1.6108,ppc:28.04,pppc:156.55,tcc:36.52},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:130.67,pppc:261.34,tcc:138.02},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:3,ppc:130.67,pppc:261.34,tcc:138.02},
+   tss:{"Alex Livingston":{cm:21,fce:1.0000,resp:0.4281,pct_cm:0.3484,pct_ua:0.0993,remote:0.8000,pct_sh:0.2944,pct_o:0.4091},"Tanner Cowan":{cm:14,fce:0.9286,resp:0.3671,pct_cm:0.3098,pct_ua:0.1306,remote:0.6000,pct_sh:0.2926,pct_o:0.5739},"Rhyan O'Shane":{cm:6,fce:1.0000,resp:0.7000,pct_cm:0.2796,pct_ua:0.0065,remote:0.6000,pct_sh:0.2248,pct_o:0.6737}},
+   tTeam:{cm:41,fce:0.9756,resp:0.4471,pct_cm:0.3152,pct_ua:0.0978,pct_dca:0.0393,remote:0.7000,pct_sh:0.2692,pct_o:0.5624},
+   corey:{calls:95,total:163}},
+
+  {week:"4/6 \u2013 4/10",
+   service:{"Chad Mahand":{cm:20,pct_cm:0.7670,fce:0.8000,resp:1.4600,ppc:34.66,pppc:173.29,tcc:42.01},"Jimmy Puck":{cm:10,pct_cm:0.4113,fce:0.6000,resp:3.5160,ppc:33.31,pppc:133.25,tcc:55.13},"Jim Stacy":{cm:11,pct_cm:0.3719,fce:0.8182,resp:2.1064,ppc:50.08,pppc:81.39,tcc:59.72},"Scott Reinert":{cm:10,pct_cm:0.2409,fce:0.9000,resp:1.7300,ppc:0.00,pppc:0,tcc:23.17},"Vynce Stewart":{cm:14,pct_cm:0.2412,fce:0.9286,resp:1.4493,ppc:2.81,pppc:39.28,tcc:15.16}},
+   sTeam:{cm:65,pct_cm:0.3852,fce:0.8154,resp:1.9249,ppc:25.84,pppc:111.46,tcc:39.45},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:107.99,pppc:107.99,tcc:122.69},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:4,ppc:53.99,pppc:107.99,tcc:61.34},
+   tss:{"Alex Livingston":{cm:16,fce:1.0000,resp:0.6325,pct_cm:0.2770,pct_ua:0.0461,remote:1.0000,pct_sh:0.3012,pct_o:0.377},"Tanner Cowan":{cm:9,fce:0.8889,resp:0.3856,pct_cm:0.1490,pct_ua:0.0391,remote:0.7500,pct_sh:0.3095,pct_o:0.594},"Rhyan O'Shane":{cm:11,fce:1.0000,resp:0.7400,pct_cm:0.0811,pct_ua:0.0625,remote:1.0000,pct_sh:0.3249,pct_o:0.4864}},
+   tTeam:{cm:36,fce:0.9722,resp:0.6036,pct_cm:0.1548,pct_ua:0.0497,pct_dca:0.0562,remote:0.9500,pct_sh:0.3821,pct_o:0.4685},
+   corey:{calls:63,total:171}},
+
+  {week:"4/13 \u2013 4/17",
+   service:{"Chad Mahand":{cm:11,pct_cm:0.5815,fce:0.9091,resp:1.3982,ppc:35.45,pppc:77.98,tcc:42.83},"Jimmy Puck":{cm:12,pct_cm:0.5934,fce:0.6667,resp:1.3517,ppc:126.83,pppc:253.66,tcc:140.25},"Jim Stacy":{cm:16,pct_cm:0.6798,fce:0.8125,resp:2.0556,ppc:26.10,pppc:52.21,tcc:35.90},"Scott Reinert":{cm:0,pct_cm:0,fce:0,resp:0,ppc:0,pppc:0,tcc:0},"Vynce Stewart":{cm:6,pct_cm:0.1740,fce:1.0000,resp:1.1267,ppc:29.25,pppc:87.74,tcc:31.81}},
+   sTeam:{cm:45,pct_cm:0.5042,fce:0.8222,resp:1.5833,ppc:55.67,pppc:119.29,tcc:64.88},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:3,ppc:0,pppc:0,tcc:0},
+   tss:{"Alex Livingston":{cm:7,fce:0.8571,resp:0.6729,pct_cm:0.2511,pct_ua:0.0746,remote:1.0000,pct_sh:0.5803,pct_o:0.1906},"Tanner Cowan":{cm:11,fce:0.9091,resp:1.0709,pct_cm:0.1660,pct_ua:0.0443,remote:1.0000,pct_sh:0.3095,pct_o:0.594},"Rhyan O'Shane":{cm:19,fce:1.0000,resp:0.4542,pct_cm:0.2548,pct_ua:0.0767,remote:0.8182,pct_sh:0.3249,pct_o:0.4864}},
+   tTeam:{cm:37,fce:0.9459,resp:0.6789,pct_cm:0.2174,pct_ua:0.0629,pct_dca:0.0514,remote:0.9000,pct_sh:0.3821,pct_o:0.4685},
+   corey:{calls:51,total:95}},
+
+  {week:"4/20 – 4/24",
+   service:{"Chad Mahand":{cm:20,pct_cm:0.668,fce:0.8000,resp:1.8685,ppc:59.17,pppc:185.96,tcc:66.17},"Jimmy Puck":{cm:11,pct_cm:0.5254,fce:0.9091,resp:2.7882,ppc:0.00,pppc:0,tcc:23.62},"Jim Stacy":{cm:12,pct_cm:0.3494,fce:0.6667,resp:1.8517,ppc:76.67,pppc:268.35,tcc:87.72},"Scott Reinert":{cm:0,pct_cm:0,fce:0,resp:0,ppc:0,pppc:0,tcc:0},"Vynce Stewart":{cm:10,pct_cm:0.267,fce:0.7000,resp:2.096,ppc:25.14,pppc:125.69,tcc:38.30}},
+   sTeam:{cm:53,pct_cm:0.3631,fce:0.7736,resp:2.0985,ppc:45.28,pppc:202.04,tcc:57.76},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:96.64,pppc:96.64,tcc:96.64},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:1,ppc:96.64,pppc:96.64,tcc:96.64},
+   tss:{"Alex Livingston":{cm:8,fce:1.0000,resp:0.7875,pct_cm:0.2561,pct_ua:0.0009,pct_sh:0.1772,remote:1.0000,pct_o:0.5667},"Tanner Cowan":{cm:14,fce:0.9286,resp:0.2929,pct_cm:0.376,pct_ua:0.1752,pct_sh:0.2651,remote:1.0000,pct_o:0.3589},"Rhyan O'Shane":{cm:17,fce:1.0000,resp:0.6112,pct_cm:0.1345,pct_ua:0.0762,pct_sh:0.1954,remote:0.7500,pct_o:0.67}},
+   tTeam:{cm:39,fce:0.9744,resp:0.5331,pct_cm:0.2549,pct_ua:0.0983,pct_dca:0.0168,pct_sh:0.2185,remote:0.9167,pct_o:0.5266},
+   corey:{calls:87,total:145}},
+
+  {week:"4/27 – 5/1",
+   service:{"Chad Mahand":{cm:19,pct_cm:0.729,fce:0.8947,resp:2.0632,ppc:24.41,pppc:154.57,tcc:29.38},"Jimmy Puck":{cm:10,pct_cm:0.5205,fce:0.9,resp:1.793,ppc:10.19,pppc:101.91,tcc:22.93},"Jim Stacy":{cm:18,pct_cm:0.5519,fce:0.9444,resp:1.9594,ppc:19.36,pppc:52.54,tcc:27.53},"Scott Reinert":{cm:8,pct_cm:0.2224,fce:1.0,resp:2.3725,ppc:0.00,pppc:0,tcc:17.06},"Vynce Stewart":{cm:16,pct_cm:0.519,fce:0.9375,resp:1.8269,ppc:67.61,pppc:216.37,tcc:80.35}},
+   sTeam:{cm:71,pct_cm:0.4937,fce:0.9296,resp:1.9804,ppc:27.99,pppc:125.95,tcc:37.95},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:18.20},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:4,ppc:0,pppc:0,tcc:18.20},
+   tss:{"Alex Livingston":{cm:9,fce:1.0,resp:0.2,pct_cm:0.2119,pct_ua:0.0129,pct_sh:0.2421,pct_o:0.5459,remote:0.7143},"Tanner Cowan":{cm:23,fce:0.9565,resp:0.3535,pct_cm:0.3387,pct_ua:0.0626,pct_sh:0.2925,pct_o:0.3687,remote:0.875},"Rhyan O'Shane":{cm:14,fce:0.9286,resp:0.2743,pct_cm:0.1355,pct_ua:0.0768,pct_sh:0.552,pct_o:0.3125,remote:1.0}},
+   tTeam:{cm:46,fce:0.9565,resp:0.2993,pct_cm:0.2288,pct_ua:0.054,pct_dca:0.0268,pct_sh:0.3737,pct_o:0.3975,remote:0.8571},
+   corey:{calls:76,total:153}},
+
+  {week:"5/4 – 5/8",
+   service:{"Chad Mahand":{cm:4,pct_cm:0.1705,fce:1.0,resp:2.0975,ppc:69.93,pppc:116.54,tcc:76.37},"Jimmy Puck":{cm:8,pct_cm:0.5401,fce:0.625,resp:2.8312,ppc:87.35,pppc:349.42,tcc:117.45},"Jim Stacy":{cm:9,pct_cm:0.4765,fce:1.0,resp:2.1411,ppc:33.22,pppc:61.69,tcc:44.31},"Scott Reinert":{cm:24,pct_cm:0.6778,fce:0.7917,resp:1.5196,ppc:46.55,pppc:166.24,tcc:55.06},"Vynce Stewart":{cm:14,pct_cm:0.4795,fce:0.7143,resp:2.5486,ppc:62.69,pppc:292.53,tcc:65.29}},
+   sTeam:{cm:59,pct_cm:0.4794,fce:0.7966,resp:2.0756,ppc:54.18,pppc:160.07,tcc:64.43},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:2.80},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:1,ppc:0,pppc:0,tcc:2.80},
+   tss:{"Alex Livingston":{cm:21,fce:0.9524,resp:0.3667,pct_cm:0.7932,pct_ua:0.1214,pct_sh:0.0162,pct_o:0.1906,remote:0.9375},"Tanner Cowan":{cm:8,fce:0.875,resp:0.9688,pct_cm:0.1344,pct_ua:0.0869,pct_sh:0.1959,pct_o:0.6696,remote:1.0},"Rhyan O'Shane":{cm:24,fce:1.0,resp:0.6425,pct_cm:0.1686,pct_ua:0.0574,pct_sh:0.2189,pct_o:0.6125,remote:0.9444}},
+   tTeam:{cm:53,fce:0.9623,resp:0.5825,pct_cm:0.244,pct_ua:0.0777,pct_dca:0.0,pct_sh:0.1814,pct_o:0.5746,remote:0.9444},
+   corey:{calls:74,total:150}},
+
+  {week:"5/11 – 5/15",
+   service:{"Chad Mahand":{cm:8,pct_cm:0.358,fce:0.875,resp:3.075,ppc:86.62,pppc:230.97,tcc:91.69},"Jimmy Puck":{cm:9,pct_cm:0.3766,fce:0.7778,resp:2.2422,ppc:29.38,pppc:293.83,tcc:41.98},"Jim Stacy":{cm:9,pct_cm:0.4727,fce:0.7778,resp:1.5744,ppc:47.79,pppc:175.24,tcc:59.69},"Scott Reinert":{cm:10,pct_cm:0.3845,fce:0.9,resp:2.525,ppc:62.95,pppc:209.84,tcc:75.97},"Vynce Stewart":{cm:11,pct_cm:0.3557,fce:1.0,resp:0.9855,ppc:12.24,pppc:33.65,tcc:15.42}},
+   sTeam:{cm:47,pct_cm:0.3779,fce:0.8723,resp:2.0221,ppc:45.53,pppc:162.61,tcc:54.79},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:136.08,pppc:544.31,tcc:153.75},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:8,ppc:136.08,pppc:544.31,tcc:153.75},
+   tss:{"Alex Livingston":{cm:18,fce:1.0,resp:1.0739,pct_cm:0.3551,pct_ua:0.1588,pct_sh:0.1826,pct_o:0.4622,remote:0.8889},"Tanner Cowan":{cm:37,fce:1.0,resp:0.7519,pct_cm:0.2924,pct_ua:0.104,pct_sh:0.2526,pct_o:0.4549,remote:0.8889},"Rhyan O'Shane":{cm:0,fce:0,resp:0,pct_cm:0,pct_ua:0,pct_sh:0,pct_o:0,remote:0}},
+   tTeam:{cm:55,fce:1.0,resp:0.8573,pct_cm:0.315,pct_ua:0.1237,pct_dca:0.0,pct_sh:0.2275,pct_o:0.4576,remote:0.8889},
+   corey:{calls:89,total:151}},
+
+  {week:"5/18 – 5/22",
+   service:{"Chad Mahand":{cm:12,pct_cm:0.8533,fce:0.6667,resp:1.7392,ppc:23.31,pppc:139.85,tcc:30.83},"Jimmy Puck":{cm:15,pct_cm:0.8035,fce:0.9333,resp:1.278,ppc:38.92,pppc:291.88,tcc:50.02},"Jim Stacy":{cm:12,pct_cm:0.479,fce:0.75,resp:2.05,ppc:16.35,pppc:76.31,tcc:24.50},"Scott Reinert":{cm:16,pct_cm:0.6731,fce:0.9375,resp:1.8531,ppc:28.83,pppc:230.66,tcc:50.23},"Vynce Stewart":{cm:9,pct_cm:0.4694,fce:1.0,resp:1.46,ppc:60.19,pppc:270.86,tcc:72.71}},
+   sTeam:{cm:64,pct_cm:0.631,fce:0.8594,resp:1.6786,ppc:31.75,pppc:190.49,tcc:44.26},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:0,ppc:0,pppc:0,tcc:0},
+   tss:{"Alex Livingston":{cm:10,fce:0.9,resp:1.154,pct_cm:0.3542,pct_ua:0.0555,pct_sh:0.4811,pct_o:0.1647,remote:0.5714},"Tanner Cowan":{cm:39,fce:0.9231,resp:0.8487,pct_cm:0.4604,pct_ua:0.124,pct_sh:0.236,pct_o:0.3036,remote:0.9583}},
+   tTeam:{cm:49,fce:0.9184,resp:0.911,pct_cm:0.4135,pct_ua:0.0937,pct_dca:0.0,pct_sh:0.3443,pct_o:0.2422,remote:0.871},
+   corey:{calls:30,total:50}},
+
+  {week:"5/26 – 5/29",
+   service:{"Chad Mahand":{cm:19,pct_cm:0.6578,fce:0.8947,resp:1.2458,ppc:8.98,pppc:85.28,tcc:11.85},"Jimmy Puck":{cm:6,pct_cm:0.7927,fce:0.8333,resp:2.2283,ppc:57.80,pppc:346.83,tcc:76.94},"Jim Stacy":{cm:6,pct_cm:0.4354,fce:0.8333,resp:1.895,ppc:63.98,pppc:191.93,tcc:75.53},"Scott Reinert":{cm:14,pct_cm:0.5712,fce:0.9286,resp:2.9021,ppc:55.47,pppc:194.14,tcc:68.42},"Vynce Stewart":{cm:16,pct_cm:0.626,fce:0.625,resp:3.5031,ppc:6.92,pppc:36.89,tcc:9.10}},
+   sTeam:{cm:61,pct_cm:0.5987,fce:0.8197,resp:2.3785,ppc:29.32,pppc:149.04,tcc:36.78},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:4.20},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:2,ppc:0,pppc:0,tcc:2.10},
+   tss:{"Alex Livingston":{cm:11,fce:1.0,resp:1.2445,pct_cm:0.7104,pct_ua:0.2696,pct_sh:0.0811,pct_o:0.2086,remote:0.8},"Tanner Cowan":{cm:9,fce:0.7778,resp:2.4844,pct_cm:0.3076,pct_ua:0.0182,pct_sh:0.6058,pct_o:0.0866,remote:0.625}},
+   tTeam:{cm:20,fce:0.9,resp:1.8025,pct_cm:0.4537,pct_ua:0.1094,pct_dca:0.0,pct_sh:0.4154,pct_o:0.1309,remote:0.6923},
+   corey:{calls:0,total:61}},
+
+  {week:"6/1 – 6/5",
+   service:{"Chad Mahand":{cm:7,pct_cm:0.385,fce:0.7143,resp:1.6971,ppc:0.0,pppc:0,tcc:9.8},"Jimmy Puck":{cm:7,pct_cm:0.3992,fce:1.0,resp:1.8271,ppc:44.71,pppc:312.98,tcc:70.31},"Jim Stacy":{cm:8,pct_cm:0.268,fce:0.75,resp:1.745,ppc:16.12,pppc:32.24,tcc:27.58},"Scott Reinert":{cm:15,pct_cm:0.5023,fce:0.8667,resp:1.938,ppc:20.15,pppc:107.44,tcc:32.31},"Vynce Stewart":{cm:9,pct_cm:0.3766,fce:0.7778,resp:1.0578,ppc:178.94,pppc:447.34,tcc:182.09}},
+   sTeam:{cm:46,pct_cm:0.3818,fce:0.8261,resp:1.6787,ppc:53.20,pppc:212.80,tcc:64.98},
+   prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},
+   pTeam:{calls:0,ppc:0,pppc:0,tcc:0},
+   tss:{"Alex Livingston":{cm:10,fce:0.8,resp:0.367,pct_cm:0.7875,pct_ua:0.2213,pct_sh:0.1211,pct_o:0.0915,remote:0.8571},"Tanner Cowan":{cm:20,fce:0.95,resp:0.8545,pct_cm:0.4426,pct_ua:0.0914,pct_sh:0.1802,pct_o:0.3773,remote:0.7143},"Clayton Akehurst":{cm:43,fce:1.0,resp:0.5393,pct_cm:0.8928,pct_ua:0.5304,pct_sh:0.0,pct_o:0.1072,remote:0.8235}},
+   tTeam:{cm:73,fce:0.9589,resp:0.6021,pct_cm:0.6242,pct_ua:0.233,pct_dca:0.0024,pct_sh:0.1211,pct_o:0.2547,remote:0.7895},
+   corey:{calls:37,total:114}}
+  ,
+  {week:"6/8 \u2013 6/12",service:{"Chad Mahand":{cm:15,pct_cm:0.4709,fce:0.6667,resp:1.9087,ppc:10.95,pppc:164.23,tcc:15.9},"Jimmy Puck":{cm:0,pct_cm:0,fce:0,resp:0,ppc:0,pppc:0,tcc:0},"Jim Stacy":{cm:9,pct_cm:0.503,fce:0.6667,resp:3.7944,ppc:66.43,pppc:113.88,tcc:84.34},"Scott Reinert":{cm:18,pct_cm:0.5508,fce:0.9444,resp:1.5978,ppc:76.31,pppc:228.92,tcc:83.85},"Vynce Stewart":{cm:19,pct_cm:0.5686,fce:0.9474,resp:1.5584,ppc:24.53,pppc:93.22,tcc:33.23}},sTeam:{cm:61,pct_cm:0.5254,fce:0.8361,resp:1.9861,ppc:43.77,pppc:147.42,tcc:52.99},prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},pTeam:{calls:0,ppc:0,pppc:0,tcc:0},tss:{"Alex Livingston":{cm:9,fce:1.0,resp:0.3711,pct_cm:0.3728,pct_ua:0.0935,pct_sh:0.0347,pct_o:0.5925,remote:0.6667},"Tanner Cowan":{cm:18,fce:1.0,resp:0.4606,pct_cm:0.4775,pct_ua:0.0908,pct_sh:0.2179,pct_o:0.2731,remote:0.7222},"Clayton Akehurst":{cm:38,fce:0.8947,resp:0.2068,pct_cm:0.8755,pct_ua:0.4563,pct_sh:0.0114,pct_o:0.2012,remote:0.5263}},tTeam:{cm:65,pct_dca:0,fce:0.9384,resp:0.2998,pct_cm:0.6957,pct_ua:0.3049,pct_sh:0.0718,pct_o:0.2753,remote:0.6},corey:{calls:32,total:73}}
+  ,
+  {week:"6/15 \u2013 6/19",service:{"Chad Mahand":{cm:14,pct_cm:0.614,fce:1.0,resp:1.7177,ppc:66.99,pppc:234.46,tcc:78.54},"Jimmy Puck":{cm:9,pct_cm:0.3341,fce:1.0,resp:4.72,ppc:1.1,pppc:11.01,tcc:13.0},"Jim Stacy":{cm:10,pct_cm:0.4537,fce:0.6,resp:1.667,ppc:55.34,pppc:132.82,tcc:62.69},"Scott Reinert":{cm:6,pct_cm:0.2836,fce:0.8333,resp:1.185,ppc:30.77,pppc:92.31,tcc:41.04},"Vynce Stewart":{cm:12,pct_cm:0.3733,fce:0.9167,resp:1.1742,ppc:3.09,pppc:37.09,tcc:8.92}},sTeam:{cm:51,pct_cm:0.4177,fce:0.8824,resp:2.047,ppc:33.97,pppc:141.13,tcc:43.24},prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},pTeam:{calls:0,ppc:0,pppc:0,tcc:0},tss:{"Alex Livingston":{cm:5,fce:0.8,resp:2.514,pct_cm:0.2908,pct_ua:0.1645,pct_sh:0.2551,pct_o:0.4541,remote:0.8},"Tanner Cowan":{cm:15,fce:1.0,resp:0.516,pct_cm:0.3384,pct_ua:0.1839,pct_sh:0.2851,pct_o:0.3764,remote:0.6},"Clayton Akehurst":{cm:34,fce:0.9706,resp:0.3212,pct_cm:0.5762,pct_ua:0.2733,pct_sh:0.0815,pct_o:0.3423,remote:1.0}},tTeam:{cm:54,pct_dca:0,fce:0.963,resp:0.5783,pct_cm:0.4837,pct_ua:0.2384,pct_sh:0.1541,pct_o:0.3621,remote:0.8704},corey:{calls:64,total:148}}
+  ,
+  {week:"6/29 \u2013 7/2",service:{"Chad Mahand":{cm:7,pct_cm:0.3944,fce:0.5714,resp:1.6614,ppc:23.59,pppc:82.57,tcc:30.09},"Jimmy Puck":{cm:10,pct_cm:0.1952,fce:0.9,resp:1.688,ppc:10.65,pppc:53.24,tcc:17.65},"Jim Stacy":{cm:6,pct_cm:0.2558,fce:0.3333,resp:2.435,ppc:22.26,pppc:77.92,tcc:51.06},"Scott Reinert":{cm:14,pct_cm:0.4808,fce:0.9286,resp:1.3614,ppc:12.43,pppc:93.24,tcc:19.24},"Vynce Stewart":{cm:10,pct_cm:0.4563,fce:0.9,resp:1.1,ppc:31.29,pppc:312.95,tcc:36.4}},sTeam:{cm:47,pct_cm:0.329,fce:0.7872,resp:1.557,ppc:18.92,pppc:102.99,tcc:28.52},prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0.0,pppc:0,tcc:6.3},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},pTeam:{calls:1,ppc:0.0,pppc:0,tcc:6.3},tss:{"Alex Livingston":{cm:1,fce:1.0,resp:2.98,pct_cm:0.0602,pct_ua:0.0,pct_sh:0.4045,pct_o:0.483,remote:0.0},"Tanner Cowan":{cm:17,fce:1.0,resp:0.8712,pct_cm:0.378,pct_ua:0.2604,pct_sh:0.1608,pct_o:0.4093,remote:1.0},"Clayton Akehurst":{cm:21,fce:1.0,resp:0.5814,pct_cm:0.4551,pct_ua:0.2984,pct_sh:0.0512,pct_o:0.4936,remote:1.0}},tTeam:{cm:39,pct_dca:0,fce:1.0,resp:0.7692,pct_cm:0.4114,pct_ua:0.2742,pct_sh:0.108,pct_o:0.4566,remote:0.9744},corey:{calls:67,total:155}}
+  ,
+  {week:"7/6 \u2013 7/10",service:{"Chad Mahand":{cm:17,pct_cm:0.6123,fce:0.7059,resp:1.3018,ppc:74.97,pppc:254.91,tcc:81.52},"Jimmy Puck":{cm:4,pct_cm:0.2554,fce:1.0,resp:2.385,ppc:43.12,pppc:86.24,tcc:76.37},"Jim Stacy":{cm:9,pct_cm:0.2717,fce:0.8889,resp:1.2856,ppc:43.86,pppc:75.18,tcc:51.44},"Scott Reinert":{cm:9,pct_cm:0.5321,fce:1.0,resp:2.4389,ppc:56.33,pppc:154.91,tcc:76.76},"Vynce Stewart":{cm:17,pct_cm:0.6283,fce:0.8824,resp:2.6812,ppc:85.32,pppc:241.73,tcc:95.16}},sTeam:{cm:56,pct_cm:0.4581,fce:0.8572,resp:1.9781,ppc:66.28,pppc:168.47,tcc:78.21},prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:297.5,pppc:595.01,tcc:302.06}},pTeam:{calls:2,ppc:297.5,pppc:595.01,tcc:302.06},tss:{"Alex Livingston":{cm:4,fce:1.0,resp:0.6475,pct_cm:0.2353,pct_ua:0.0454,pct_sh:0.0657,pct_o:0.699,remote:0.3333},"Tanner Cowan":{cm:19,fce:0.8947,resp:0.8889,pct_cm:0.5168,pct_ua:0.1645,pct_sh:0.1455,pct_o:0.3376,remote:0.8571},"Clayton Akehurst":{cm:43,fce:0.9767,resp:0.614,pct_cm:0.7343,pct_ua:0.4425,pct_sh:0.0163,pct_o:0.2494,remote:0.9375}},tTeam:{cm:66,pct_dca:0,fce:0.9545,resp:0.6952,pct_cm:0.6414,pct_ua:0.3384,pct_sh:0.0565,pct_o:0.302,remote:0.8777},corey:{calls:66,total:147}}
+  ,
+  {week:"7/13 \u2013 7/17",service:{"Chad Mahand":{cm:18,pct_cm:0.7109,fce:0.8333,resp:2.5333,ppc:25.09,pppc:150.57,tcc:28.67},"Jimmy Puck":{cm:12,pct_cm:0.4667,fce:0.75,resp:2.8908,ppc:11.98,pppc:77.85,tcc:29.15},"Jim Stacy":{cm:11,pct_cm:0.3858,fce:0.9091,resp:1.7727,ppc:55.3,pppc:143.79,tcc:66.13},"Scott Reinert":{cm:11,pct_cm:0.3994,fce:0.8182,resp:2.1991,ppc:11.83,pppc:47.33,tcc:25.54},"Vynce Stewart":{cm:14,pct_cm:0.4449,fce:0.9286,resp:1.9129,ppc:44.38,pppc:221.89,tcc:53.34}},sTeam:{cm:66,pct_cm:0.4741,fce:0.8485,resp:2.2842,ppc:30.06,pppc:133.37,tcc:40.3},prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:185.5,pppc:370.99,tcc:206.15},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},pTeam:{calls:2,ppc:185.5,pppc:370.99,tcc:206.15},tss:{"Alex Livingston":{cm:1,fce:1.0,resp:2.75,pct_cm:0.0497,pct_ua:0.0,pct_sh:0.5631,pct_o:0.3872,remote:0.0},"Tanner Cowan":{cm:14,fce:1.0,resp:0.1771,pct_cm:0.2308,pct_ua:0.0993,pct_sh:0.216,pct_o:0.5532,remote:0.8333},"Clayton Akehurst":{cm:38,fce:1.0,resp:0.2845,pct_cm:0.638,pct_ua:0.3934,pct_sh:0.1255,pct_o:0.2365,remote:0.7}},tTeam:{cm:53,pct_dca:0,fce:1.0,resp:0.3026,pct_cm:0.5193,pct_ua:0.3083,pct_sh:0.1577,pct_o:0.323,remote:0.722},corey:{calls:75,total:134}}
+  ,
+  {week:"7/20 \u2013 7/24",service:{"Chad Mahand":{cm:8,pct_cm:0.3223,fce:1.0,resp:1.5225,ppc:0.0,pppc:0,tcc:8.66},"Jimmy Puck":{cm:11,pct_cm:0.5462,fce:0.9091,resp:2.7445,ppc:0.0,pppc:0,tcc:16.99},"Jim Stacy":{cm:0,pct_cm:0,fce:0,resp:0,ppc:0,pppc:0,tcc:0},"Scott Reinert":{cm:19,pct_cm:0.6412,fce:1.0,resp:2.4374,ppc:0.0,pppc:0,tcc:9.98},"Vynce Stewart":{cm:14,pct_cm:0.5165,fce:0.8571,resp:1.3207,ppc:6.16,pppc:43.12,tcc:14.71}},sTeam:{cm:52,pct_cm:0.5062,fce:0.9423,resp:2.061,ppc:1.66,pppc:43.12,tcc:12.54},prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0.0,pppc:0,tcc:42.0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},pTeam:{calls:1,ppc:0.0,pppc:0,tcc:42.0},tss:{"Alex Livingston":{cm:5,fce:0.8,resp:0.542,pct_cm:0.4203,pct_ua:0.1654,pct_sh:0.0867,pct_o:0.493,remote:0.0},"Tanner Cowan":{cm:3,fce:1.0,resp:0.69,pct_cm:0.1267,pct_ua:0.0547,pct_sh:0.2133,pct_o:0.66,remote:0.5},"Clayton Akehurst":{cm:31,fce:0.9677,resp:0.6842,pct_cm:0.6326,pct_ua:0.3495,pct_sh:0.0494,pct_o:0.318,remote:1.0}},tTeam:{cm:39,pct_dca:0,fce:0.9487,resp:0.6664,pct_cm:0.5665,pct_ua:0.3032,pct_sh:0.0668,pct_o:0.3667,remote:0.8333},corey:{calls:58,total:97}}
+  ,
+  {week:"7/27 \u2013 7/31",service:{"Chad Mahand":{cm:6,pct_cm:0.1959,fce:0.6667,resp:1.5,ppc:71.17,pppc:427.02,tcc:85.05},"Jimmy Puck":{cm:14,pct_cm:0.715,fce:0.9286,resp:2.2271,ppc:18.42,pppc:92.09,tcc:34.94},"Jim Stacy":{cm:8,pct_cm:0.3338,fce:1.0,resp:23.1275,ppc:9.29,pppc:74.36,tcc:26.62},"Scott Reinert":{cm:17,pct_cm:0.621,fce:0.8235,resp:1.2118,ppc:29.75,pppc:126.43,tcc:37.37},"Vynce Stewart":{cm:13,pct_cm:0.4079,fce:0.9231,resp:1.9454,ppc:53.53,pppc:139.19,tcc:65.33}},sTeam:{cm:58,pct_cm:0.4693,fce:0.8793,resp:4.674,ppc:33.55,pppc:141.38,tcc:46.3},prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:58.71,pppc:234.84,tcc:82.86},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},pTeam:{calls:4,ppc:58.71,pppc:234.84,tcc:82.86},tss:{"Alex Livingston":{cm:11,fce:0.8182,resp:0.8655,pct_cm:0.5178,pct_ua:0.1956,pct_sh:0.0944,pct_o:0.3878,remote:0.3333},"Tanner Cowan":{cm:0,fce:0,resp:0,pct_cm:0.0,pct_ua:0.0,pct_sh:0.2219,pct_o:0.7781,remote:0},"Clayton Akehurst":{cm:50,fce:0.98,resp:1.7778,pct_cm:0.7211,pct_ua:0.4492,pct_sh:0.0341,pct_o:0.2448,remote:1.0}},tTeam:{cm:61,pct_dca:0,fce:0.9508,resp:1.6133,pct_cm:0.6844,pct_ua:0.4035,pct_sh:0.045,pct_o:0.2706,remote:0.8798},corey:{calls:88,total:145}}
+  ,
+  {week:"8/3 \u2013 8/7",service:{"Chad Mahand":{cm:20,pct_cm:0.6474,fce:0.85,resp:1.257,ppc:41.17,pppc:181.16,tcc:46.87},"Jimmy Puck":{cm:10,pct_cm:0.5006,fce:0.9,resp:1.444,ppc:46.47,pppc:170.4,tcc:63.21},"Jim Stacy":{cm:10,pct_cm:0.3401,fce:0.8,resp:2.38,ppc:12.75,pppc:41.43,tcc:19.16},"Scott Reinert":{cm:11,pct_cm:0.3261,fce:1.0,resp:1.2327,ppc:20.94,pppc:83.76,tcc:37.21},"Vynce Stewart":{cm:11,pct_cm:0.3858,fce:1.0,resp:2.93,ppc:13.4,pppc:49.15,tcc:30.78}},sTeam:{cm:62,pct_cm:0.4347,fce:0.9032,resp:1.7608,ppc:28.72,pppc:110.08,tcc:40.01},prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0,pppc:0,tcc:0},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},pTeam:{calls:0,ppc:0,pppc:0,tcc:0},tss:{"Alex Livingston":{cm:19,fce:1.0,resp:1.2611,pct_cm:0.4095,pct_ua:0.0803,pct_sh:0.1164,pct_o:0.474,remote:0.8182},"Tanner Cowan":{cm:13,fce:1.0,resp:0.8285,pct_cm:0.3503,pct_ua:0.2606,pct_sh:0.1543,pct_o:0.4954,remote:0.6667},"Clayton Akehurst":{cm:45,fce:1.0,resp:0.6329,pct_cm:0.6635,pct_ua:0.4641,pct_sh:0.1364,pct_o:0.0113,remote:1.0}},tTeam:{cm:77,pct_dca:0,fce:1.0,resp:0.8209,pct_cm:0.5479,pct_ua:0.335,pct_sh:0.1345,pct_o:0.2072,remote:0.8989},corey:{calls:60,total:166}}
+  ,
+  {week:"8/10 \u2013 8/14",service:{"Chad Mahand":{cm:11,pct_cm:0.3967,fce:0.7273,resp:2.3218,ppc:62.69,pppc:163.0,tcc:78.85},"Jimmy Puck":{cm:9,pct_cm:0.525,fce:0.8889,resp:2.5556,ppc:110.33,pppc:367.77,tcc:132.17},"Jim Stacy":{cm:3,pct_cm:0.2296,fce:0.6667,resp:3.6933,ppc:32.07,pppc:40.09,tcc:49.01},"Scott Reinert":{cm:11,pct_cm:0.4482,fce:1.0,resp:4.5191,ppc:2.52,pppc:27.77,tcc:17.73},"Vynce Stewart":{cm:16,pct_cm:0.4257,fce:0.875,resp:1.4694,ppc:28.12,pppc:149.96,tcc:34.42}},sTeam:{cm:50,pct_cm:0.4043,fce:0.86,resp:2.6568,ppc:46.48,pppc:159.77,tcc:60.68},prod:{"Chad Mahand":{ppc:0,pppc:0,tcc:0},"Jimmy Puck":{ppc:0.0,pppc:0,tcc:15.4},"Jim Stacy":{ppc:0,pppc:0,tcc:0},"Scott Reinert":{ppc:0,pppc:0,tcc:0},"Vynce Stewart":{ppc:0,pppc:0,tcc:0}},pTeam:{calls:1,ppc:0.0,pppc:0,tcc:15.4},tss:{"Alex Livingston":{cm:2,fce:1.0,resp:0.39,pct_cm:0.5149,pct_ua:0.0,pct_sh:0.0783,pct_o:0.4068,remote:0.5},"Tanner Cowan":{cm:8,fce:0.875,resp:1.34,pct_cm:0.1353,pct_ua:0.1097,pct_sh:0.2049,pct_o:0.6598,remote:1.0},"Clayton Akehurst":{cm:55,fce:1.0,resp:0.4276,pct_cm:0.9145,pct_ua:0.755,pct_sh:0.0478,pct_o:0.0376,remote:1.0}},tTeam:{cm:65,pct_dca:0,fce:0.9846,resp:0.5387,pct_cm:0.8063,pct_ua:0.6523,pct_sh:0.0681,pct_o:0.1255,remote:0.9846},corey:{calls:33,total:133}}
 ];
 
-// ══ STATE ═════════════════════════════════════════════════════════
-const SEED={
-  Q1:{note:'Q1 2026 actuals (Jan–Mar)',
-    rev:{a:2119518}, cogs:{a:30.04}, gm:{a:69.97}, payroll:{a:31.71}, opex:{a:50.52},
-    months:[
-      {label:'Jan', rev:861520,  cogs:20.73, gm:79.3, payroll:30.7,  opex:45.88},
-      {label:'Feb', rev:596649,  cogs:39.27, gm:60.7, payroll:34.21, opex:53.66},
-      {label:'Mar', rev:661349,  cogs:30.11, gm:69.9, payroll:30.21, opex:51.95},
-    ]},
-  Q2:{note:'Q2 2026 actuals (Apr–Jun)',
-    rev:{a:2206474}, cogs:{a:27.50}, gm:{a:72.43}, payroll:{a:32.51}, opex:{a:51.52},
-    months:[
-      {label:'Apr', rev:799684,  cogs:16.22, gm:83.8, payroll:25.26, opex:48.43},
-      {label:'May', rev:678871,  cogs:28.87, gm:71.1, payroll:42.27, opex:60.92},
-      {label:'Jun', rev:728119,  cogs:37.62, gm:62.4, payroll:29.99, opex:45.42},
-    ]},
-  Q3:{note:'Q3 2026 — awaiting actuals',
-    rev:{a:null}, cogs:{a:null}, gm:{a:null}, payroll:{a:null}, opex:{a:null}, months:[]},
-  Q4:{note:'Q4 2026 — awaiting actuals',
-    rev:{a:null}, cogs:{a:null}, gm:{a:null}, payroll:{a:null}, opex:{a:null}, months:[]},
-  YTD:{note:'YTD 2026 (Jan–Jun actuals)',
-    rev:{a:4326192}, cogs:{a:28.0}, gm:{a:72.0}, payroll:{a:31.8}, opex:{a:50.64}, months:[]},
-};
+const SVC=['Chad Mahand','Jimmy Puck','Jim Stacy','Scott Reinert','Vynce Stewart'];
+const TSS=['Alex Livingston','Tanner Cowan','Clayton Akehurst'];
+const SCOLS=['#3b82f6','#10b981','#f59e0b','#8b5cf6','#ec4899'];
+const TCOLS=['#06b6d4','#f97316','#a78bfa'];
+const PCOLS=['#d97706','#f59e0b','#fbbf24','#b45309','#fde68a'];
+const WL=WEEKS.map(w=>w.week.replace(/\s*[–—\-]+.*$/,'').trim());
+let cw=WEEKS.length-1, sTrM='fce', tTrM='fce', pTrM='ppc';
+const pct=v=>(v*100).toFixed(1)+'%';
+const $=id=>document.getElementById(id);
+const $f=v=>'$'+v.toFixed(2);
+const fc=v=>v>=0.9?'hi':v>=0.75?'md':'lo';
+const fn=s=>s.split(' ')[0];
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 
-let aQ='Q1', showMonths=false;
-
-const fmtM=v=>v>=1e6?'$'+(v/1e6).toFixed(3).replace(/0+$/,'').replace(/\.$/,'')+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+Math.round(v).toLocaleString();
-const fmtP=v=>v!=null?v.toFixed(1)+'%':'—';
-
-function getA(id){
-  return SEED[aQ]?.[id]?.a??null;
+// ── SVG BAR CHART ─────────────────────────────────────────────────
+function barChart(cid,labels,values,colors,opts){
+  const W=440,H=185,ml=40,mr=10,mt=12,mb=32,cw=W-ml-mr,ch=H-mt-mb,n=values.length;
+  const bw=Math.min(46,(cw/n)*0.62),gap=cw/n;
+  const max=Math.max(...values)*1.18||1;
+  const isPct=opts&&opts.pct,isDol=opts&&opts.dol;
+  let g='',gl='',bars='';
+  for(let i=0;i<=4;i++){
+    const v=max*i/4,y=mt+ch-(ch*i/4);
+    g+=`<line class="grid-line" x1="${ml}" y1="${y}" x2="${ml+cw}" y2="${y}"/>`;
+    const lv=isPct?v.toFixed(0)+'%':isDol?'$'+v.toFixed(0):v.toFixed(1);
+    gl+=`<text class="axis-label" x="${ml-4}" y="${y+4}" text-anchor="end">${lv}</text>`;
+  }
+  labels.forEach((lb,i)=>{
+    const x=ml+gap*i+(gap-bw)/2,bh=Math.max(2,(values[i]/max)*ch),y=mt+ch-bh;
+    const vl=isPct?values[i].toFixed(1)+'%':isDol?'$'+values[i].toFixed(0):values[i];
+    const sh=lb.length>7?lb.slice(0,6)+'…':lb;
+    bars+=`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="4" fill="${colors[i]}" opacity="0.85"/>`;
+    bars+=`<text class="bar-val" x="${x+bw/2}" y="${y-4}" text-anchor="middle">${vl}</text>`;
+    bars+=`<text class="bar-label" x="${x+bw/2}" y="${mt+ch+20}" text-anchor="middle">${esc(sh)}</text>`;
+  });
+  $(cid).innerHTML=`<svg class="bar-svg" viewBox="0 0 ${W} ${H}">${g}${gl}${bars}</svg>`;
 }
-function status(t,a){
-  if(a==null)return 'p';
-  const m=(tv,a,d)=>d==='up'?a>=tv:a<=tv;
-  if(m(t.stretch,a,t.dir))return 's';
-  if(m(t.target,a,t.dir))return 't';
-  if(m(t.thresh,a,t.dir))return 'th';
-  return 'r';
+
+// ── SVG LINE CHART ────────────────────────────────────────────────
+function lineChart(cid,labels,series,opts){
+  const W=560,H=210,ml=44,mr=14,mt=14,mb=36,cw=W-ml-mr,ch=H-mt-mb,n=labels.length;
+  if(n<2)return;
+  const isPct=opts&&opts.pct,isDol=opts&&opts.dol;
+  const all=series.flatMap(s=>s.data);
+  const vmin=Math.min(...all),vmax=Math.max(...all),pad=(vmax-vmin)*0.15||1;
+  const lo=Math.max(0,vmin-pad),hi=vmax+pad;
+  const xP=i=>ml+(cw/(n-1))*i;
+  const yP=v=>mt+ch-(ch*(v-lo)/(hi-lo));
+  let g='',ay='',ax='',paths='',dots='';
+  for(let i=0;i<=4;i++){
+    const v=lo+(hi-lo)*i/4,y=mt+ch-(ch*i/4);
+    g+=`<line class="grid-line" x1="${ml}" y1="${y}" x2="${ml+cw}" y2="${y}"/>`;
+    const lv=isPct?v.toFixed(0)+'%':isDol?'$'+v.toFixed(0):v.toFixed(1);
+    ay+=`<text class="axis-label" x="${ml-5}" y="${y+4}" text-anchor="end">${lv}</text>`;
+  }
+  labels.forEach((l,i)=>ax+=`<text class="axis-label" x="${xP(i)}" y="${mt+ch+22}" text-anchor="middle">${esc(l)}</text>`);
+  series.forEach(s=>{
+    const pts=s.data.map((v,i)=>`${xP(i)},${yP(v)}`).join(' ');
+    paths+=`<polyline class="line-path" points="${pts}" stroke="${s.color}" opacity="0.9"/>`;
+    s.data.forEach((v,i)=>{
+      const vl=isPct?v.toFixed(1)+'%':isDol?'$'+v.toFixed(1):v.toFixed(2);
+      dots+=`<circle cx="${xP(i)}" cy="${yP(v)}" r="4.5" fill="${s.color}" stroke="#080b10" stroke-width="2"><title>${esc(s.name)}: ${vl}</title></circle>`;
+    });
+  });
+  $(cid).innerHTML=`<svg class="bar-svg" viewBox="0 0 ${W} ${H}">${g}${ay}${ax}${paths}${dots}</svg>`;
 }
-const SLBL={s:'On Track — Stretch',t:'On Track for Target',th:'Threshold Only',r:'Needs Attention',p:'Awaiting Data'};
-const SCC={s:'cy',t:'g',th:'a',r:'r',p:'p'};
-function dv(t,a){if(a==null)return '—';return t.fmt==='$'?fmtM(a):fmtP(a);}
 
-// ══ RENDER ════════════════════════════════════════════════════════
-function renderAll(){renderTabs();renderBanner();renderMonthlyToggle();renderGrid();renderTrend();}
-
-function renderTabs(){
-  const el=document.getElementById('qTabs');if(!el)return;
-  el.innerHTML=['Q1','Q2','Q3','Q4','YTD'].map(m=>
-    `<button class="qtab ${m===aQ?'active':''}" onclick="setQ('${m}')">${m}</button>`
-  ).join('');
+// ── DOUGHNUT ──────────────────────────────────────────────────────
+function doughnut(cid,slices){
+  const R=54,r=36,cx=70,cy=70;
+  const tot=slices.reduce((a,s)=>a+s.v,0)||1;
+  let ang=-Math.PI/2,paths='';
+  slices.forEach(s=>{
+    const sw=(s.v/tot)*Math.PI*2;
+    if(sw<0.001){ang+=sw;return;}
+    const x1=cx+R*Math.cos(ang),y1=cy+R*Math.sin(ang);
+    const x2=cx+R*Math.cos(ang+sw),y2=cy+R*Math.sin(ang+sw);
+    const ix1=cx+r*Math.cos(ang),iy1=cy+r*Math.sin(ang);
+    const ix2=cx+r*Math.cos(ang+sw),iy2=cy+r*Math.sin(ang+sw);
+    const lg=sw>Math.PI?1:0;
+    paths+=`<path d="M${x1},${y1} A${R},${R} 0 ${lg},1 ${x2},${y2} L${ix2},${iy2} A${r},${r} 0 ${lg},0 ${ix1},${iy1} Z" fill="${s.color}" opacity="0.9"><title>${esc(s.label)}: ${s.v.toFixed(1)}%</title></path>`;
+    ang+=sw;
+  });
+  const leg=slices.map(s=>`<div class="dl-item"><div class="dl-dot" style="background:${s.color}"></div><span>${esc(s.label)}</span><span class="dl-val">${s.v.toFixed(1)}%</span></div>`).join('');
+  $(cid).innerHTML=`<div class="donut-wrap"><svg viewBox="0 0 140 140" width="130" height="130">${paths}<text x="${cx}" y="${cy+5}" text-anchor="middle" font-size="11" fill="#64748b" font-family="Segoe UI,sans-serif">Time</text></svg><div class="donut-legend">${leg}</div></div>`;
 }
-function setQ(q){aQ=q;showMonths=false;renderAll();}
-function toggleMonths(){showMonths=!showMonths;renderMonthlyToggle();}
 
-function renderMonthlyToggle(){
-  const el=document.getElementById('moWrap');if(!el)return;
-  const months=SEED[aQ]?.months||[];
-  // Only show toggle for quarters with monthly data
-  if(!['Q1','Q2','Q3','Q4'].includes(aQ)||months.length===0){el.innerHTML='';return;}
-  const metrics=[
-    {id:'rev',  label:'Revenue', fmt:'$'},
-    {id:'cogs', label:'COGS %',  fmt:'%'},
-    {id:'gm',   label:'GM %',    fmt:'%'},
-    {id:'payroll',label:'Payroll %',fmt:'%'},
-    {id:'opex', label:'OPEX %',  fmt:'%'},
-  ];
-  const fmtVal=(v,fmt)=>fmt==='$'?fmtM(v):v.toFixed(1)+'%';
-  // Color a % value against target direction
-  const cc=(id,v)=>{
-    const t=T.find(x=>x.id===id);if(!t||v==null)return '';
-    const st=status(t,v);return SCC[st];
+// ── COREY RING ────────────────────────────────────────────────────
+function coreyRing(cid,pv){
+  const R=50,r=36,cx=65,cy=65,sw=pv*Math.PI*2;
+  const x1=cx+R*Math.cos(-Math.PI/2),y1=cy+R*Math.sin(-Math.PI/2);
+  const x2=cx+R*Math.cos(-Math.PI/2+sw),y2=cy+R*Math.sin(-Math.PI/2+sw);
+  const ix1=cx+r*Math.cos(-Math.PI/2),iy1=cy+r*Math.sin(-Math.PI/2);
+  const ix2=cx+r*Math.cos(-Math.PI/2+sw),iy2=cy+r*Math.sin(-Math.PI/2+sw);
+  const lg=sw>Math.PI?1:0;
+  const bg=`<path d="M${cx},${cy-R} A${R},${R} 0 1,1 ${cx-0.001},${cy-R} L${cx-0.001},${cy-r} A${r},${r} 0 1,0 ${cx},${cy-r} Z" fill="#1a2230"/>`;
+  const arc=pv>0.001?`<path d="M${x1},${y1} A${R},${R} 0 ${lg},1 ${x2},${y2} L${ix2},${iy2} A${r},${r} 0 ${lg},0 ${ix1},${iy1} Z" fill="#f97316" opacity="0.9"/>`:'';
+  $(cid).innerHTML=`<svg viewBox="0 0 130 130" width="120" height="120">${bg}${arc}<text x="${cx}" y="${cy-4}" text-anchor="middle" font-size="15" font-weight="700" fill="#f97316" font-family="Segoe UI,sans-serif">${(pv*100).toFixed(1)}%</text><text x="${cx}" y="${cy+13}" text-anchor="middle" font-size="9" fill="#64748b" font-family="Segoe UI,sans-serif">OF TEAM</text></svg>`;
+}
+
+// ═══════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════
+function render(){
+  const d=WEEKS[cw];
+
+  // Tabs
+  // Month grouping
+  const MONTH_MAP = {
+    'February 2026': [0,1,2],
+    'March 2026':    [3,4,5,6,7],
+    'April 2026':    [8,9,10],
+    'May 2026':      [11,12,13,14,15],
+    'June 2026':     [16,17,18,19],
+    'July 2026':      [20,21,22,23],
+    'August 2026':    [24,25],
   };
-  let rows=months.map(m=>{
-    const cells=metrics.map(mt=>{
-      const v=m[mt.id];
-      const cls=mt.fmt==='%'?cc(mt.id,v):'';
-      return `<td><span class="mo-val ${cls}">${fmtVal(v,mt.fmt)}</span></td>`;
-    }).join('');
-    return `<tr><td>${m.label}</td>${cells}</tr>`;
-  }).join('');
-  let heads=metrics.map(m=>`<th>${m.label}</th>`).join('');
-  el.innerHTML=`
-    <button class="mo-toggle-btn ${showMonths?'active':''}" onclick="toggleMonths()">
-      ${showMonths?'▲ Hide Monthly Breakdown':'▼ Monthly Breakdown'}
-    </button>
-    ${showMonths?`<div class="mo-panel">
-      <table class="mo-table">
-        <thead><tr><th>Month</th>${heads}</tr></thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`:''}`;
+  const curMonth = Object.keys(MONTH_MAP).find(m => MONTH_MAP[m].includes(cw)) || Object.keys(MONTH_MAP)[0];
+
+  // Populate month dropdown
+  const sel = $('monthSel');
+  sel.innerHTML = Object.keys(MONTH_MAP).map(m =>
+    `<option value="${esc(m)}"${m===curMonth?' selected':''}>${esc(m)}</option>`
+  ).join('');
+
+  // Show only weeks for current month
+  const visibleIdxs = MONTH_MAP[curMonth];
+  $('tabs').innerHTML = visibleIdxs.map(i =>
+    `<button class="tab${i===cw?' on':''}" onclick="cw=${i};render()">${esc(WEEKS[i].week)}</button>`
+  ).join('');
+
+  // ── Service KPIs
+  $('sKpis').innerHTML=[
+    ['CM Calls',d.sTeam.cm,'','sv'],
+    ['Team FCE',pct(d.sTeam.fce),'','sv'],
+    ['% Time on CM',pct(d.sTeam.pct_cm),'of total hours','sv'],
+    ['Avg Response',d.sTeam.resp.toFixed(2)+' hrs','','sv'],
+    ['Parts / Call',$f(d.sTeam.ppc),'CM + parts calls','sv'],
+    ['Parts / Parts Call',$f(d.sTeam.pppc),'calls with parts','sv'],
+    ['Total Cost / Call',$f(d.sTeam.tcc),'parts + mileage','sv'],
+  ].map(([l,v,s,c])=>`<div class="kpi ${c}"><div class="kpi-l">${l}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:''}</div>`).join('');
+
+  // ── Service table
+  $('sTh').innerHTML=`<tr>${['Technician','CM Calls','% Time CM','FCE','Avg Resp','Parts/Call','Parts/Parts Call','Total Cost/Call'].map((h,i)=>`<th${i?'':' style="text-align:left"'}>${h}</th>`).join('')}</tr>`;
+  $('sTb').innerHTML=SVC.map(t=>{const m=d.service[t];return`<tr><td>${esc(t)}</td><td>${m.cm}</td><td>${pct(m.pct_cm)}</td><td><span class="bdg ${fc(m.fce)}">${pct(m.fce)}</span></td><td>${m.resp.toFixed(2)}</td><td>${$f(m.ppc)}</td><td>${$f(m.pppc)}</td><td>${$f(m.tcc)}</td></tr>`}).join('')+
+  `<tr class="tr"><td>TEAM TOTAL</td><td>${d.sTeam.cm}</td><td>${pct(d.sTeam.pct_cm)}</td><td><span class="bdg ${fc(d.sTeam.fce)}">${pct(d.sTeam.fce)}</span></td><td>${d.sTeam.resp.toFixed(2)}</td><td>${$f(d.sTeam.ppc)}</td><td>${$f(d.sTeam.pppc)}</td><td>${$f(d.sTeam.tcc)}</td></tr>`;
+
+  // ── Production KPIs
+  $('pKpis').innerHTML=[
+    ['Total Production Calls',d.pTeam.calls,'this week','pr'],
+    ['Prod. Parts / Call',$f(d.pTeam.ppc),'production calls only','pr'],
+    ['Prod. Parts / Parts Call',$f(d.pTeam.pppc),'production w/ parts','pr'],
+    ['Prod. Cost / Call',$f(d.pTeam.tcc),'parts + mileage','pr'],
+  ].map(([l,v,s,c])=>`<div class="kpi ${c}"><div class="kpi-l">${l}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:''}</div>`).join('');
+
+  // ── Production table
+  $('pTh').innerHTML=`<tr>${['Technician','Prod. Parts/Call','Prod. Parts/Parts Call','Prod. Cost/Call'].map((h,i)=>`<th${i?'':' style="text-align:left"'}>${h}</th>`).join('')}</tr>`;
+  $('pTb').innerHTML=SVC.map(t=>{const p=d.prod[t];return`<tr><td>${esc(t)}</td><td>${$f(p.ppc)}</td><td>${$f(p.pppc)}</td><td>${$f(p.tcc)}</td></tr>`}).join('')+
+  `<tr class="tr"><td>TEAM TOTAL</td><td>${$f(d.pTeam.ppc)}</td><td>${$f(d.pTeam.pppc)}</td><td>${$f(d.pTeam.tcc)}</td></tr>`;
+
+  // ── TSS KPIs
+  $('tKpis').innerHTML=[
+    ['CM Calls',d.tTeam.cm,'','ts'],
+    ['Team FCE',pct(d.tTeam.fce),'','ts'],
+    ['Avg Response',(d.tTeam.resp*60).toFixed(0)+' min','','ts'],
+    ['% Time on CM',pct(d.tTeam.pct_cm),'of total hours','ts'],
+    ['% Time on UA',pct(d.tTeam.pct_ua),'user assistance','ts'],
+    ['% Time on O Calls',pct(d.tTeam.pct_o),'other call type','ts'],
+    ['% Time on SH Calls',pct(d.tTeam.pct_sh),'shop/SH call type','ts'],
+    ['Remote Resolution',d.tTeam.remote>0?pct(d.tTeam.remote):'—','network trouble','ts'],
+  ].map(([l,v,s,c])=>`<div class="kpi ${c}"><div class="kpi-l">${l}</div><div class="kpi-v">${v}</div>${s?`<div class="kpi-s">${s}</div>`:''}</div>`).join('');
+
+  // ── TSS table
+  $('tTh').innerHTML=`<tr>${['Technician','CM Calls','FCE','Avg Resp','% Time CM','% Time UA','% Time O','% Time SH','Remote Res.'].map((h,i)=>`<th${i?'':' style="text-align:left"'}>${h}</th>`).join('')}</tr>`;
+  $('tTb').innerHTML=TSS.map(t=>{const m=d.tss[t];return`<tr><td>${esc(t)}</td><td>${m.cm}</td><td><span class="bdg ${fc(m.fce)}">${pct(m.fce)}</span></td><td>${(m.resp*60).toFixed(0)} min</td><td>${pct(m.pct_cm)}</td><td>${pct(m.pct_ua)}</td><td>${pct(m.pct_o)}</td><td>${pct(m.pct_sh)}</td><td>${m.remote>0?pct(m.remote):'—'}</td></tr>`}).join('')+
+  `<tr class="tr"><td>TEAM TOTAL</td><td>${d.tTeam.cm}</td><td><span class="bdg ${fc(d.tTeam.fce)}">${pct(d.tTeam.fce)}</span></td><td>${(d.tTeam.resp*60).toFixed(0)} min</td><td>${pct(d.tTeam.pct_cm)}</td><td>${pct(d.tTeam.pct_ua)}</td><td>${pct(d.tTeam.pct_o)}</td><td>${pct(d.tTeam.pct_sh)}</td><td>${d.tTeam.remote>0?pct(d.tTeam.remote):'—'}</td></tr>`;
+
+  // ── Corey
+  coreyRing('cCoreyDonut',d.corey.calls/d.corey.total);
+  $('cCalls').textContent=d.corey.calls;
+  $('cTotal').textContent=d.corey.total;
+
+  // ── Bar charts
+  barChart('cFceSvc',SVC.map(fn),SVC.map(t=>+(d.service[t].fce*100).toFixed(1)),SCOLS,{pct:true});
+  barChart('cParts', SVC.map(fn),SVC.map(t=>+d.service[t].ppc.toFixed(2)),SCOLS,{dol:true});
+  barChart('cFceTss',TSS.map(fn),TSS.map(t=>+(d.tss[t].fce*100).toFixed(1)),TCOLS,{pct:true});
+  barChart('cProdPpc',SVC.map(fn),SVC.map(t=>+d.prod[t].ppc.toFixed(2)),PCOLS,{dol:true});
+  barChart('cProdTcc',SVC.map(fn),SVC.map(t=>+d.prod[t].tcc.toFixed(2)),PCOLS,{dol:true});
+
+  // ── TSS doughnut
+  const tt=d.tTeam,oth=Math.max(0,1-tt.pct_cm-tt.pct_ua-tt.pct_dca);
+  doughnut('cDonut',[
+    {label:'CM',v:+(tt.pct_cm*100).toFixed(1),color:'#10b981'},
+    {label:'User Assist',v:+(tt.pct_ua*100).toFixed(1),color:'#3b82f6'},
+    {label:'DCA',v:+(tt.pct_dca*100).toFixed(1),color:'#8b5cf6'},
+    {label:'Other',v:+(oth*100).toFixed(1),color:'#1e293b'},
+  ]);
+
+  renderTrends();
 }
 
+// ═══════════════════════════════════════════
+// TRENDS
+// ═══════════════════════════════════════════
+const S_OPT=[{k:'fce',l:'FCE'},{k:'pct_cm',l:'% Time CM'},{k:'ppc',l:'Parts/Call'},{k:'tcc',l:'Total Cost'},{k:'resp',l:'Avg Resp'}];
+const T_OPT=[{k:'fce',l:'FCE'},{k:'pct_cm',l:'% Time CM'},{k:'pct_ua',l:'% Time UA'},{k:'pct_o',l:'% Time O'},{k:'pct_sh',l:'% Time SH'},{k:'remote',l:'Remote Res.'},{k:'resp',l:'Avg Resp'}];
+const P_OPT=[{k:'ppc',l:'Prod Parts/Call'},{k:'pppc',l:'Prod Parts/Parts Call'},{k:'tcc',l:'Prod Cost/Call'}];
 
-function renderBanner(){
-  const stats=T.map(t=>status(t,getA(t.id)));
-  const on=stats.filter(s=>s==='t').length;
-  const str=stats.filter(s=>s==='s').length;
-  const th=stats.filter(s=>s==='th').length;
-  const rf=stats.filter(s=>s==='r').length;
-  const pd=stats.filter(s=>s==='p').length;
-  const note=SEED[aQ]?.note||'';
-  document.getElementById('banner').innerHTML=
-    `<span>📋 <strong>Plan Status: Not Yet Funded</strong> — ${note}</span>
-     <div class="pills">
-       ${str?`<span class="pill cy">${str} Stretch</span>`:''}
-       ${on?`<span class="pill g">${on} On Track</span>`:''}
-       ${th?`<span class="pill a">${th} Threshold Only</span>`:''}
-       ${rf?`<span class="pill r">${rf} Needs Attention</span>`:''}
-       ${pd?`<span class="pill a">${pd} Awaiting Data</span>`:''}
-     </div>`;
+function renderTrends(){
+  $('sTrBtns').innerHTML=S_OPT.map(o=>`<button class="tb${o.k===sTrM?' on':''}" onclick="sTrM='${o.k}';renderTrends()">${o.l}</button>`).join('');
+  $('tTrBtns').innerHTML=T_OPT.map(o=>`<button class="tb${o.k===tTrM?' on':''}" onclick="tTrM='${o.k}';renderTrends()">${o.l}</button>`).join('');
+  $('pTrBtns').innerHTML=P_OPT.map(o=>`<button class="tb${o.k===pTrM?' on':''}" onclick="pTrM='${o.k}';renderTrends()">${o.l}</button>`).join('');
+
+  const ipS=['fce','pct_cm'].includes(sTrM),idS=['ppc','pppc','tcc'].includes(sTrM);
+  const ipT=['fce','pct_cm','pct_ua','pct_o','pct_sh','remote'].includes(tTrM);
+
+  lineChart('cSTrend',WL,SVC.map((t,i)=>({name:fn(t),color:SCOLS[i],data:WEEKS.map(w=>ipS?+(w.service[t][sTrM]*100).toFixed(1):+w.service[t][sTrM].toFixed(2))})),{pct:ipS,dol:idS});
+  $('sLeg').innerHTML=SVC.map((t,i)=>`<div class="li"><div class="ld" style="background:${SCOLS[i]}"></div>${esc(fn(t))}</div>`).join('');
+
+  lineChart('cTTrend',WL,TSS.map((t,i)=>({name:fn(t),color:TCOLS[i],data:WEEKS.map(w=>ipT?+(w.tss[t][tTrM]*100).toFixed(1):+w.tss[t][tTrM].toFixed(2))})),{pct:ipT});
+  $('tLeg').innerHTML=TSS.map((t,i)=>`<div class="li"><div class="ld" style="background:${TCOLS[i]}"></div>${esc(fn(t))}</div>`).join('');
+
+  lineChart('cPTrend',WL,SVC.map((t,i)=>({name:fn(t),color:PCOLS[i],data:WEEKS.map(w=>+w.prod[t][pTrM].toFixed(2))})),{dol:true});
+  $('pLeg').innerHTML=SVC.map((t,i)=>`<div class="li"><div class="ld" style="background:${PCOLS[i]}"></div>${esc(fn(t))}</div>`).join('');
 }
 
-function renderGrid(){
-  document.getElementById('tgrid').innerHTML=T.map(t=>cardHTML(t)).join('');
+// ═══════════════════════════════════════════
+// PIPELINE DATA
+// ═══════════════════════════════════════════
+const PIPELINE = [
+  // ── May 2026 ──────────────────────────────────────────────────
+  {company:"Bentonville Child Care & Development Center Inc", close:"5/31/2026", status:"Forecasted", stage:"Initial Contact",  category:"Existing - Print", current:true},
+  {company:"Eagle Redi-Mix Concrete LLC",                     close:"5/31/2026", status:"Forecasted", stage:"Closed Won",        category:"Existing - Print", current:true},
+  {company:"First Christian Church",                          close:"5/31/2026", status:"Forecasted", stage:"Closed Won",        category:"Existing - Print", current:true},
+  {company:"Moseley Public Schools",                          close:"5/31/2026", status:"Forecasted", stage:"Closed Won",        category:"Existing - Print", current:true},
+  {company:"Salem Lutheran Church",                           close:"5/31/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Sunstar Insurance Group LLC dba Farris Insurance Agency Inc", close:"5/31/2026", status:"Forecasted", stage:"Closed Won", category:"Existing - Print", current:true},
+  // ── June 2026 ─────────────────────────────────────────────────
+  {company:"Agility Center Orthopedics LLC",                  close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Berkley Industries LLC",                          close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Boyles Ventures LLC dba Petland",                 close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Calvary Baptist Church",                          close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Cave Springs City Of",                            close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Country View Animal Care Center Corporation",     close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Decatur Public Schools",                          close:"6/30/2026", status:"Forecasted", stage:"Discovery",         category:"Existing - Print", current:true},
+  {company:"Dorssers USA Inc",                                close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"First Christian Church Eureka Springs Inc",       close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Infinity Compounding Solutions LLC",              close:"6/30/2026", status:"Forecasted", stage:"Negotiation",       category:"Existing - Print", current:true},
+  {company:"Miller Zell Inc",                                 close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Tugg Logistics LLC",                              close:"6/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  // ── July 2026 ─────────────────────────────────────────────────
+  {company:"Multi-Craft Contractors",                         close:"7/30/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Hearth & Home Inc",                               close:"7/31/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+  {company:"Team 1 Supplier Service LLC",                     close:"7/31/2026", status:"Forecasted", stage:"Lead",              category:"Existing - Print", current:true},
+];
+
+function stageBadge(stage) {
+  const s = stage.toLowerCase();
+  let cls = 'stage-lead';
+  if (s.includes('initial contact') || s.includes('contact')) cls = 'stage-contact';
+  else if (s.includes('proposal') || s.includes('design'))    cls = 'stage-proposal';
+  else if (s.includes('discovery'))                           cls = 'stage-proposal';
+  else if (s.includes('negotiation'))                         cls = 'stage-negotiation';
+  else if (s.includes('won'))                                 cls = 'stage-won';
+  return `<span class="stage-bdg ${cls}">${esc(stage)}</span>`;
 }
 
-function cardHTML(t){
-  const a=getA(t.id),st=status(t,a),cc=SCC[st];
-  let fp=0,mp=50;
-  if(a!=null){
-    if(t.fmt==='$'){fp=Math.min(100,(a/t.target)*100);mp=Math.min(95,(t.thresh/t.target)*100);}
-    else if(t.dir==='up'){const lo=t.thresh*.7,hi=t.stretch*1.1;fp=Math.max(0,Math.min(100,((a-lo)/(hi-lo))*100));mp=Math.max(0,Math.min(100,((t.target-lo)/(hi-lo))*100));}
-    else{const lo=t.stretch*.85,hi=t.thresh*1.15;fp=Math.max(0,Math.min(100,((hi-a)/(hi-lo))*100));mp=Math.max(0,Math.min(100,((hi-t.target)/(hi-lo))*100));}
-  }
-  const goalStr=t.fmt==='$'
-    ? (aQ==='YTD' ? `YTD actual: ${dv(t,a)} &nbsp;·&nbsp; Annual target: ${fmtM(t.target)}` : `Quarterly actual: ${dv(t,a)} &nbsp;·&nbsp; Annual target: ${fmtM(t.target)}`)
-    :`Goal: ${t.dir==='up'?'≥':'≤'}${t.target}${t.fmt}`;
-  return `<div class="tc ${t.wide?'wide':''}">
-    <div class="tc-top ${cc}"></div>
-    <div class="tc-body">
-      <div class="tc-dept">${t.dept}</div>
-      <div class="tc-name">${t.name}</div>
-      <div class="tc-val ${cc}">${dv(t,a)}</div>
-      <div class="tc-goal">${goalStr}</div>
-      <span class="tc-badge ${cc}">${SLBL[st]}</span>
-      <div class="prog">
-        <div class="prog-track">
-          <div class="prog-fill ${cc}" style="width:${fp.toFixed(1)}%"></div>
-          <div class="prog-marker" style="left:${mp.toFixed(1)}%"></div>
-        </div>
-      </div>
-    </div>
-  </div>`;
-}
+function renderPipeline() {
+  const total   = PIPELINE.length;
+  const won     = PIPELINE.filter(d => d.stage.toLowerCase().includes('won')).length;
+  const active  = PIPELINE.filter(d => !d.stage.toLowerCase().includes('won') && !d.stage.toLowerCase().includes('lead')).length;
+  const leads   = PIPELINE.filter(d => d.stage.toLowerCase() === 'lead').length;
+  const current = PIPELINE.filter(d => d.current).length;
 
-// ══ TREND — pure SVG, zero external dependencies ═════════════════
-function renderTrend(){
-  const wrap=document.getElementById('trendWrap');
-  if(!wrap)return;
-  const months=['Q1','Q2','Q3','Q4'];
-  const revData=months.map(m=>SEED[m]?.rev?.a??null);
-  const gmData=months.map(m=>SEED[m]?.gm?.a??null);
-  const opData=months.map(m=>SEED[m]?.opex?.a??null);
-  const pace=9670000/4; // quarterly pace
+  $('pipeKpis').innerHTML = [
+    ['Total Deals',    total,   'in pipeline',       'pr'],
+    ['Closed Won',     won,     'this period',        'pr'],
+    ['Active Stages',  active,  'proposal & beyond',  'pr'],
+    ['Leads',          leads,   'initial stage',      'pr'],
+    ['Current Clients',current, 'existing accounts',  'pr'],
+  ].map(([l,v,s,c]) => `<div class="kpi ${c}" style="border-top:2px solid #0f766e;"><div class="kpi-l">${l}</div><div class="kpi-v">${v}</div><div class="kpi-s">${s}</div></div>`).join('');
 
-  const W=Math.max(wrap.clientWidth||0, 400),H=210;
-  const PL=58,PR=50,PT=16,PB=34;
-  const cW=W-PL-PR,cH=H-PT-PB;
-  const n=months.length;
-  const barW=Math.floor(cW/n*0.45);
-  const maxRev=Math.max(...revData.filter(v=>v!=null),pace)*1.18;
-  const ry=v=>PT+cH-(v/maxRev)*cH;
-  const bx=i=>PL+(i/n)*cW+(cW/n-barW)/2;
-  const py=v=>PT+cH-(Math.min(v,110)/110)*cH;
-  const px=i=>PL+(i/(n-1))*cW;
-  const fmtK=v=>v>=1e6?'$'+(v/1e6).toFixed(1)+'M':v>=1e3?'$'+(v/1e3).toFixed(0)+'K':'$'+v;
+  $('pipeTh').innerHTML = `<tr>${['Company','Close Date','Status','Stage','Category','Current Client'].map(h=>`<th>${h}</th>`).join('')}</tr>`;
 
-  let svg=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:${H}px;display:block">
-  <defs><clipPath id="cp"><rect x="${PL}" y="${PT}" width="${cW}" height="${cH}"/></clipPath></defs>`;
-
-  // grid + left axis
-  [0,250000,500000,750000,1000000].forEach(v=>{
-    const y=ry(v);
-    svg+=`<line x1="${PL}" y1="${y.toFixed(1)}" x2="${PL+cW}" y2="${y.toFixed(1)}" stroke="rgba(74,132,216,0.1)" stroke-width="1"/>`;
-    svg+=`<text x="${PL-6}" y="${(y+4).toFixed(1)}" text-anchor="end" font-size="9" fill="#4A6A9A" font-family="inherit">${fmtK(v)}</text>`;
+  // Group by close date month
+  const groups = {};
+  PIPELINE.forEach(d => {
+    const mo = d.close.substring(0,d.close.lastIndexOf('/'));
+    const label = (() => { const [m] = d.close.split('/'); const months=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return months[parseInt(m)] + ' 2026'; })();
+    if (!groups[label]) groups[label] = [];
+    groups[label].push(d);
   });
-  // right axis
-  [0,25,50,75,100].forEach(v=>{
-    const y=py(v);
-    svg+=`<text x="${PL+cW+6}" y="${(y+4).toFixed(1)}" text-anchor="start" font-size="9" fill="#4A6A9A" font-family="inherit">${v}%</text>`;
+
+  let rows = '';
+  let rowIdx = 0;
+  Object.entries(groups).forEach(([month, deals]) => {
+    rows += `<tr><td colspan="6" style="background:rgba(15,118,110,0.18);color:#14b8a6;font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:6px 13px;border-bottom:1px solid rgba(15,118,110,0.25)">${esc(month)} — ${deals.length} deal${deals.length>1?'s':''}</td></tr>`;
+    deals.forEach(d => {
+      const bg = rowIdx%2===0 ? '' : 'style="background:rgba(15,118,110,0.04)"';
+      rows += `<tr ${bg}>
+        <td style="font-weight:600">${esc(d.company)}</td>
+        <td style="color:var(--muted)">${esc(d.close)}</td>
+        <td style="color:var(--muted)">${esc(d.status)}</td>
+        <td>${stageBadge(d.stage)}</td>
+        <td style="color:var(--muted);font-size:0.72rem">${esc(d.category)}</td>
+        <td style="text-align:center">${d.current ? '<span style="color:#34d399">✓</span>' : '<span style="color:var(--muted)">—</span>'}</td>
+      </tr>`;
+      rowIdx++;
+    });
   });
-
-  // monthly pace dashed line
-  const paceY=ry(pace).toFixed(1);
-  svg+=`<line x1="${PL}" y1="${paceY}" x2="${PL+cW}" y2="${paceY}" stroke="rgba(74,132,216,0.45)" stroke-width="1.5" stroke-dasharray="5,4"/>`;
-
-  // revenue bars
-  revData.forEach((v,i)=>{
-    if(v==null)return;
-    const x=bx(i).toFixed(1),y=ry(v).toFixed(1),h=(cH-(ry(v)-PT)).toFixed(1);
-    svg+=`<rect x="${x}" y="${y}" width="${barW}" height="${h}" rx="3" fill="rgba(74,132,216,0.55)" stroke="#4A84D8" stroke-width="1"/>`;
-  });
-
-  // GM line + dots
-  const gmValid=gmData.map((v,i)=>({v,i})).filter(d=>d.v!=null);
-  if(gmValid.length>1){
-    const pts=gmValid.map(d=>`${px(d.i).toFixed(1)},${py(d.v).toFixed(1)}`).join(' ');
-    svg+=`<polyline points="${pts}" fill="none" stroke="#0FC87A" stroke-width="2.5" stroke-linejoin="round" clip-path="url(#cp)"/>`;
-    gmValid.forEach(d=>svg+=`<circle cx="${px(d.i).toFixed(1)}" cy="${py(d.v).toFixed(1)}" r="4" fill="#0FC87A" stroke="#060F1E" stroke-width="2"/>`);
-  }
-
-  // OPEX line + dots
-  const opValid=opData.map((v,i)=>({v,i})).filter(d=>d.v!=null);
-  if(opValid.length>1){
-    const pts=opValid.map(d=>`${px(d.i).toFixed(1)},${py(d.v).toFixed(1)}`).join(' ');
-    svg+=`<polyline points="${pts}" fill="none" stroke="#F55252" stroke-width="2.5" stroke-linejoin="round" clip-path="url(#cp)"/>`;
-    opValid.forEach(d=>svg+=`<circle cx="${px(d.i).toFixed(1)}" cy="${py(d.v).toFixed(1)}" r="4" fill="#F55252" stroke="#060F1E" stroke-width="2"/>`);
-  }
-
-  // x labels
-  months.forEach((m,i)=>{
-    const cx=(PL+(i/n)*cW+cW/n/2).toFixed(1);
-    svg+=`<text x="${cx}" y="${H-10}" text-anchor="middle" font-size="10" fill="#4A6A9A" font-family="inherit">${m}</text>`;
-  });
-
-  svg+=`</svg>`;
-  wrap.innerHTML=svg;
+  $('pipeTb').innerHTML = rows;
 }
 
+function onMonthChange(month) {
+  const MONTH_MAP = {
+    'February 2026': [0,1,2],
+    'March 2026':    [3,4,5,6,7],
+    'April 2026':    [8,9,10],
+    'May 2026':      [11,12,13,14,15],
+    'June 2026':     [16,17,18,19],
+    'July 2026':      [20,21,22,23],
+    'August 2026':    [24,25],
+  };
+  // Jump to first week of selected month
+  const idxs = MONTH_MAP[month] || [0];
+  cw = idxs[idxs.length - 1]; // default to latest week in month
+  render();
+}
 
-
-// Dashboard renders only after correct password is entered above
+render();
+renderPipeline();
 </script>
 </body>
 </html>
